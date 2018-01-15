@@ -6,7 +6,6 @@ from reaname3 import gci
 #open excel
 def open_excel(file='C:\\Users\\jjq\\Desktop\\everyday\\everyday\\source.xlsx'):
 	try:
-		print('读取excel。。。。')
 		data = xlrd.open_workbook(file)
 		return data
 	except Exception as e:
@@ -24,17 +23,24 @@ def excel_table_byname(file='C:\\Users\\jjq\\Desktop\\everyday\\everyday\\source
 		if row:
 			app = []
 			for i in range(len(colnames)):
-				list.append(row[i])
+				list.append(row[i].upper())
 			#list.append(app)
 	return list
 
 	
 def main():
+	str1 = '2009-DQ13-013-009'
+	str2 = '2009-DQ13-013'
 	table = excel_table_byname()
-	fileList = gci(u'X:\\PDF文件 - 副本\\教学',table)
-	#for row in table:
-		#print(row)
-
-		
+	s = '2009-DQ13-013-009'
+	for i in table:
+		print(i)
+		try:
+			str(s).index(str(i))
+			print('12323:'+s)
+		except Exception as e:
+			pass
+			#print(str(e))
+	
 if __name__=="__main__":
 	main();

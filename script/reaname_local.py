@@ -8,8 +8,8 @@ def gci(filepath,table):
 	print('开始查找文件。。。。。。。。。。。。')
 	files = os.listdir(filepath)
 	for obj in files:
-		print(os.path.join(filepath,obj))
-		#print(os.path.join(filepath,obj),file=f)
+		#print(os.path.join(filepath,obj))
+		print(os.path.join(filepath,obj),file=f)
 		obj_path = os.path.join(filepath,obj)
 		if os.path.isdir(obj_path):
 			print(obj.upper(),file=f)
