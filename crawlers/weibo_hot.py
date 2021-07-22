@@ -2,7 +2,6 @@ import configparser
 import os
 
 import requests
-from bs4 import BeautifulSoup
 import pymysql
 from lxml import etree
 import time
@@ -15,17 +14,20 @@ CONST_BASE_URL = 'https://s.weibo.com/top/summary?cate=realtimehot'
 CONST_TIME = 60
 CONST_ROOT_DIR = os.path.dirname(os.path.abspath('.'))
 
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                        'Chrome/62.0.3202.89 Safari/537.36'}
+
 
 def init_db_message():
     cf = configparser.ConfigParser()
     cf.read(CONST_ROOT_DIR + '/config.ini')
 
 
-def parse_weibo_hot(_url):
-    r = requests.get(_url, 'lxml')
-    soup = BeautifulSoup(r.text, 'lxml')
-    table_soup = soup.select('table')
-    return table_soup
+# def parse_weibo_hot(_url):
+#     r = requests.get(_url, 'lxml')
+#     soup = BeautifulSoup(r.text, 'lxml')
+#     table_soup = soup.select('table')
+#     return table_soup
 
 
 def parse_from_github(_url):
@@ -54,15 +56,20 @@ def parse_from_github(_url):
 
 # lxml解析html方法
 def parse_weibo_hot_lxml(_url):
-    r = requests.get(_url)
+    r = requests.get(_url, headers=headers)
     table_lxml = etree.HTML(r.text)
-    table_tr = table_lxml.xpath('//table/tbody/tr[position()>1]')
+    table_tr = table_lxml.xpath('//table/tbody/tr')
     indexArr = []
     title = []
     hits = []
     hotType = []
+    hrefArry = []
     for trs in table_tr:
-        indexArr.append(trs.xpath('./td[@class="td-01 ranktop"]/text()')[0])
+        indexArr_temp = trs.xpath('./td[@class="td-01 ranktop"]/text()|./td[@class="td-01"]/text()')
+        if len(indexArr_temp) > 0:
+            indexArr.append(indexArr_temp[0])
+        else:
+            indexArr.append('top')
         title.append(trs.xpath('./td[@class="td-02"]/a/text()')[0])
         temp_hit = trs.xpath('./td[@class="td-02"]/span/text()')
         if len(temp_hit) > 0:
@@ -76,6 +83,8 @@ def parse_weibo_hot_lxml(_url):
         else:
             hotType.append('0')
 
+        hrefArry.append(trs.xpath('./td[position()=2]/a/@href')[0])
+
     # print(len(indexArr))
     # print(len(title))
     # print(len(hits))
@@ -84,7 +93,7 @@ def parse_weibo_hot_lxml(_url):
     # print(title)
     # print(hits)
     # print(hotType)
-    return [indexArr, title, hits, hotType]
+    return [indexArr, title, hits, hotType, hrefArry]
 
 
 def conn_mysql():
@@ -102,10 +111,11 @@ while True:
     print(data)
     db_conn = conn_mysql()
     cursor = db_conn.cursor()
-    insert_sql = 'insert hot_record_01(temp_index,title,hit,type,date) values (%s, %s, %s, %s, now())'
+    insert_sql = 'insert hot_record_01(temp_index,title,hit,type,date,href) values (%s, %s, %s, %s, now(),%s)'
     try:
         for i in range(0, len(data[0])):
-            cursor.execute(insert_sql, (data[0][i], data[1][i], data[2][i], data[3][i]))
+            print(data[4][i])
+            cursor.execute(insert_sql, (data[0][i], data[1][i], data[2][i], data[3][i], data[4][i]))
         db_conn.commit()
     except Exception as e:
         print("插入失败")
