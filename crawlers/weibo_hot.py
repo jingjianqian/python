@@ -111,7 +111,7 @@ while True:
     print(data)
     db_conn = conn_mysql()
     cursor = db_conn.cursor()
-    insert_sql = 'insert hot_record_01(temp_index,title,hit,type,date,href) values (%s, %s, %s, %s, now(),%s)'
+    insert_sql = 'insert hot_record_temp(index,title,hit,type,date,href) values (%s, %s, %s, %s, now(),%s)'
     try:
         for i in range(0, len(data[0])):
             print(data[4][i])

@@ -1,6 +1,6 @@
 import pymysql
 
-import MyUtils
+from Utils import MyUtils
 
 
 # 连接mysql
