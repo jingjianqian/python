@@ -31,7 +31,7 @@ def excel_table_byname(file='C:\\Users\\jjq\\Desktop\\everyday\\everyday\\source
 	
 def main():
 	table = excel_table_byname()
-	fileList = gci(u'X:\\PDF文件 - 副本\\教学',table)
+	fileList = gci(u'X:\\PDF文件 - 副本\\教学', table)
 	#for row in table:
 		#print(row)
 
