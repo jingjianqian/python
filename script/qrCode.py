@@ -53,16 +53,20 @@ def getHtmlBychromium(targetUrl):
 
 
 def getDeptGuidanceHref():
+
     for deptCode in dept_list:
         deptName, hrefs, hrefs_name = getHtmlBychromium(base_url + deptCode)
         print('开始生成-', deptName, '-部门事项二维码')
+        i = 1
         for href, href_name in zip(hrefs, hrefs_name):
+            print(deptCode, i, '--->', href_name)
+            i = i + 1
             temp_img = generatorURLqrCode(qrCodeBaseUrl + href)
-
             if os.path.exists("D:/kpy/code/lingshan/svn/code/qrCode/" + deptName + "/"):
                 pass
             else:
                 os.makedirs("D:/kpy/code/lingshan/svn/code/qrCode/" + deptName + "/")
+
             temp_img.save("D:/kpy/code/lingshan/svn/code/qrCode/" + deptName + "/" + href_name + ".png")
     return None
 
