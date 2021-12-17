@@ -37,37 +37,41 @@ def getHtmlBychromium(targetUrl):
     option.add_argument("headless")
     chromeBrower = webdriver.Chrome(options=option)
     chromeBrower.get(targetUrl)
-    time.sleep(2)
+    time.sleep(4)
     page_source = chromeBrower.page_source
     html = etree.HTML(page_source)
     deptName = \
-        html.xpath("/html/body/div[@class='body-work']/div[@class='work-header']/div[@class='work-title']/text()")[0]
-
-    hrefs = html.xpath(
-        "/html/body/div[@class='body-work']/div[@class='main-work']/div[@class='work-content']/div[@class='work-con-row']/ul[@class='work-row-con']/li/a/@href")
-    hrefs_name = html.xpath(
-        "/html/body/div[@class='body-work']/div[@class='main-work']/div[@class='work-content']/div[@class='work-con-row']/ul[@class='work-row-con']/li/a/text()")
+    html.xpath("/html/body/div[@class='body-work']/div[@class='work-header']/div[@class='work-title']/text()")[0]
+    hrefs = html.xpath("/html/body/div[@class='body-work']/div[@class='main-work']/div[@class='work-content']/div["
+                       "@class='work-con-row']/ul[@class='work-row-con']/li/a/@href")
+    hrefs_name = html.xpath("/html/body/div[@class='body-work']/div[@class='main-work']/div["
+                            "@class='work-content']/div[@class='work-con-row']/ul[@class='work-row-con']/li/a/text()")
     print(hrefs_name)
     chromeBrower.close()
     return deptName, hrefs, hrefs_name
 
 
 def getDeptGuidanceHref():
-
+    j = 1
     for deptCode in dept_list:
         deptName, hrefs, hrefs_name = getHtmlBychromium(base_url + deptCode)
-        print('开始生成-', deptName, '-部门事项二维码')
+        print('开始生成第', j, '个', deptName, '部门事项二维码', '部门编号', deptCode)
+
         i = 1
         for href, href_name in zip(hrefs, hrefs_name):
-            print(deptCode, i, '--->', href_name)
+            print(deptName, deptCode, i, '--->', href_name)
             i = i + 1
             temp_img = generatorURLqrCode(qrCodeBaseUrl + href)
-            if os.path.exists("D:/kpy/code/lingshan/svn/code/qrCode/" + deptName + "/"):
+            if os.path.exists("D:/kpy/code/lingshan/svn/code/qrCode/" + str(j) + '-' + deptName + "/"):
                 pass
             else:
-                os.makedirs("D:/kpy/code/lingshan/svn/code/qrCode/" + deptName + "/")
+                os.makedirs("D:/kpy/code/lingshan/svn/code/qrCode/" + str(j) + '-' + deptName + "/")
 
-            temp_img.save("D:/kpy/code/lingshan/svn/code/qrCode/" + deptName + "/" + href_name + ".png")
+            temp_img.save(
+                "D:/kpy/code/lingshan/svn/code/qrCode/" + str(j) + '-' + deptName + "/" + str(href_name).replace('/',
+                                                                                                                 '-').replace(
+                    '\\', '-') + ".png")
+        j = j + 1
     return None
 
 
