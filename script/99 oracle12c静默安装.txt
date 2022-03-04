@@ -1,0 +1,202 @@
+#上传linuxx64_12201_database.zip到/data/soft
+#安装依赖
+yum install binutils compat-libcap1 compat-libstdc++-33 gcc gcc-c++ glibc glibc-devel ksh libgcc libstdc++ libstdc++-devel libaio libaio-devel libXext libXtst libX11 libXau libxcb libXi make sysstat
+#验证依赖
+rpm -qa binutils compat-libcap1 compat-libstdc++-33 gcc gcc-c++ glibc glibc-devel ksh libgcc libstdc++ libstdc++-devel libaio libaio-devel libXext libXtst libX11 libXau libxcb libXi make sysstat
+#关闭SELINUX
+vi /etc/selinux/config
+------------------------------------------------
+SELINUX=disabled
+------------------------------------------------:wq
+#创建用户和用户组
+groupadd -g 54321 oinstall
+groupadd -g 54322 dba
+groupadd -g 54323 oper
+groupadd -g 54324 backupdba
+groupadd -g 54325 dgdba
+groupadd -g 54326 kmdba
+groupadd -g 54327 asmdba
+groupadd -g 54328 asmoper
+groupadd -g 54329 asmadmin
+groupadd -g 54330 racdba
+useradd -u 54321 -g oinstall -G dba,oper,backupdba,dgdba,kmdba,racdba oracle
+#如需删除：userdel -rf oracle
+#修改oracle用户密码为db2admin@TEST
+passwd oracle
+#修改系统参数
+vi /etc/sysctl.conf
+------------------------------------------------
+fs.file-max = 6815744
+kernel.sem = 500 64000 200 256
+kernel.shmmni = 4096
+kernel.shmall = 1073741824
+kernel.shmmax = 4398046511104
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048576
+fs.aio-max-nr = 1048576
+net.ipv4.ip_local_port_range = 9000 65500
+kernel.panic_on_oops=1
+------------------------------------------------:wq
+/sbin/sysctl -p
+vi /etc/security/limits.conf
+------------------------------------------------
+oracle   soft   nofile   4096
+oracle   hard   nofile   65536
+oracle   soft   nproc    4096
+oracle   hard   nproc    31140
+oracle   soft   stack    10240
+oracle   hard   stack    32768
+oracle   soft   memlock  3145728
+oracle   hard   memlock  3145728
+------------------------------------------------:wq
+#配置环境变量
+su - oracle
+vi .bash_profile
+------------------------------------------------
+#Oracle Settings
+export TMP=/tmp
+
+export ORACLE_HOSTNAME=【你的hostname】
+export ORACLE_UNQNAME=【你的hostname】
+export ORACLE_BASE=/data/u01/app/oracle
+export ORACLE_HOME=$ORACLE_BASE/product/12.2.0/db_1
+export ORACLE_BIN=$ORACLE_HOME/bin
+export ORACLE_SID=orcl
+export NLS_LANG='SIMPLIFIED CHINESE_CHINA.AL32UTF8'
+
+PATH=/usr/sbin:$PATH:$ORACLE_HOME/bin
+
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib;
+export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib;
+
+umask 022
+------------------------------------------------:wq
+source .bash_profile
+
+
+#创建目录
+su - root
+mkdir -p /data/u01/app/oracle/product/12.2.0/db_1  
+chown -R oracle:oinstall /data/u01
+#查看hostname
+hostname
+#修改/etc/hosts
+vi /etc/hosts
+------------------------------------------------
+#替换127.0.0.1为hostname具体值
+------------------------------------------------:wq
+
+#解压
+su - oracle
+unzip /data/soft/linuxx64_12201_database.zip -d /data/u01
+cd /data/u01/database/response/
+#静默安装
+#拷贝静默安装应答文件
+#编辑前备份db_install.rsp
+cp db_install.rsp db_install.rsp.bak
+#修改配置
+sed -i '/^oracle.install.option=/s#=.*$#=INSTALL_DB_SWONLY#' ./db_install.rsp
+sed -i '/^UNIX_GROUP_NAME=/s#=.*$#=oinstall#' ./db_install.rsp
+sed -i '/^INVENTORY_LOCATION/s#=.*$#=/data/u01/app/oraInventory#' ./db_install.rsp
+sed -i '/^ORACLE_HOME=/s#=.*$#='$ORACLE_HOME'#' ./db_install.rsp
+sed -i '/^ORACLE_BASE=/s#=.*$#='$ORACLE_BASE'#' ./db_install.rsp
+sed -i '/^oracle.install.db.InstallEdition=/s#=.*$#=EE#' ./db_install.rsp
+sed -i '/^oracle.install.db.config.starterdb.characterSet/s#=.*$#=AL32UTF8#' ./db_install.rsp  
+sed -i '/^oracle.install.db.OSDBA_GROUP=/s#=.*$#=dba#' ./db_install.rsp
+sed -i '/^oracle.install.db.OSOPER_GROUP=/s#=.*$#=oper#' ./db_install.rsp
+sed -i '/^oracle.install.db.OSBACKUPDBA_GROUP=/s#=.*$#=backupdba#' ./db_install.rsp
+sed -i '/^oracle.install.db.OSDGDBA_GROUP=/s#=.*$#=dgdba#' ./db_install.rsp
+sed -i '/^oracle.install.db.OSKMDBA_GROUP=/s#=.*$#=kmdba#' ./db_install.rsp
+sed -i '/^oracle.install.db.OSRACDBA_GROUP=/s#=.*$#=racdba#' ./db_install.rsp
+#查看已配置项
+egrep -v "^#|^$" db_install.rsp  
+#安装oracle
+cd /data/u01/database
+./runInstaller -silent -responseFile /data/u01/database/response/db_install.rsp -ignorePrereq -ignoreSysPrereqs
+#直到出现Successfully Setup Software.；如需查看日志，tail -f /data/u01/app/oraInventory/logs/installActionsxxxxxxxxxxx.log
+su - root
+/data/u01/app/oraInventory/orainstRoot.sh
+/data/u01/app/oracle/product/12.2.0/db_1/root.sh
+su - oracle
+#验证安装
+sqlplus / as sysdba
+#配置网络
+cd /data/u01/database/response
+cp netca.rsp netca.rsp.bak
+cd /data/u01/database/
+netca -silent -responseFile /data/u01/database/response/netca.rsp
+vi /data/u01/app/oracle/product/12.2.0/db_1/network/admin/sqlnet.ora 
+--------------------------------------------
+SQLNET.ALLOWED_LOGON_VERSION_SERVER=8
+SQLNET.ALLOWED_LOGON_VERSION_CLIENT=8
+--------------------------------------------:wq
+lsnrctl status
+#lsnrctl stop
+#lsnrctl start
+
+#配置pdb数据库
+mkdir /data/u01/app/oracle/oradata
+mkdir /data/u01/app/oracle/flash_recovery_area
+cd /data/u01/database/response/
+cp dbca.rsp dbca.rsp.bak
+sed -i '/^gdbName/s#=.*$#='$ORACLE_SID'#' ./dbca.rsp
+sed -i '/^sid/s#=.*$#='$ORACLE_SID'#' ./dbca.rsp
+sed -i '/^createAsContainerDatabase/s#=.*$#=true#' ./dbca.rsp
+sed -i '/^numberOfPDBs/s#=.*$#=1#' ./dbca.rsp
+sed -i '/^pdbName/s#=.*$#=IGSP#' ./dbca.rsp
+sed -i '/^templateName/s#=.*$#=General_Purpose.dbc#' ./dbca.rsp
+sed -i '/^pdbAdminPassword/s#=.*$#='db2admin@UCAP'#' ./dbca.rsp
+sed -i '/^sysPassword/s#=.*$#='db2admin@UCAP'#' ./dbca.rsp
+sed -i '/^systemPassword/s#=.*$#='db2admin@UCAP'#' ./dbca.rsp
+sed -i '/^emConfiguration/s#=.*$#=DBEXPRESS#' ./dbca.rsp
+sed -i '/^emExpressPort/s#=.*$#=5500#' ./dbca.rsp
+sed -i '/^dbsnmpPassword/s#=.*$#='db2admin@UCAP'#' ./dbca.rsp
+sed -i '/^datafileDestination/s#=.*$#=/data/u01/app/oracle/oradata#' ./dbca.rsp
+sed -i '/^recoveryAreaDestination/s#=.*$#=/data/u01/app/oracle/flash_recovery_area#' ./dbca.rsp
+sed -i '/^storageType/s#=.*$#=FS#' ./dbca.rsp
+sed -i '/^characterSet/s#=.*$#=AL32UTF8#' ./dbca.rsp
+sed -i '/^nationalCharacterSet/s#=.*$#=AL16UTF16#' ./dbca.rsp
+sed -i '/^listeners/s#=.*$#=LISTENER#' ./dbca.rsp
+sed -i '/^sampleSchema/s#=.*$#=false#' ./dbca.rsp
+sed -i '/^automaticMemoryManagement/s#=.*$#=false#' ./dbca.rsp
+sed -i '/^totalMemory/s#=.*$#=8192#' ./dbca.rsp
+#查看已配置项
+egrep -v "^#|^$" dbca.rsp
+#安装
+cd /data/u01/database/
+dbca -silent -createDatabase -responseFile /data/u01/database/response/dbca.rsp
+#创建pdb管理员
+sqlplus / as sysdba
+SQL> show pdbs;
+SQL> alter session set container=IGSP;
+SQL> alter system set deferred_segment_creation=false;
+SQL> alter profile default limit PASSWORD_LIFE_TIME UNLIMITED;
+SQL> create user ucapadmin identified by db2admin default tablespace USERS temporary tablespace TEMP;
+SQL> grant dba to ucapadmin;
+SQL> exit
+#设置服务器重启时数据库启动
+vi /etc/oratab
+--------------------
+orcl:/data/u01/app/oracle/product/12.2.0/db_1:Y
+--------------------:wq
+#验证：可使用ucapadmin/db2admin@IP/IGSP进行访问
+#如需再创建PDB：create pluggable database IGSP_TEST admin user ucapadmin identified by db2admin file_name_convert=('/data/u01/app/oracle/oradata/orcl/pdbseed','/data/u01/app/oracle/oradata/orcl/IGSP_TEST');
+
+#修改最大连接数
+alter system set processes = 3000 scope = spfile;
+shutdown immediate;
+startup
+alter pluggable database igsp open;
+
+
+#额外步骤，装rlwrap
+yum install -y perl python36 autoconf
+rpm -Uvh /data/soft/rlwrap-0.43-2.el7.x86_64.rpm 
+su - oracle
+vi .bash_profile
+--------------------------------
+alias sqlplus='rlwrap sqlplus'
+--------------------------------:wq
+source .bash_profile
