@@ -5,7 +5,7 @@ from chromedriver import ChromeDriver
 
 
 
-d = u2.connect('192.168.0.110:5555') # alias for u2.connect_wifi('10.0.0.1')
+d = u2.connect('VED7N18C04000042') # alias for u2.connect_wifi('10.0.0.1')
 d.press("home")
 d.app_stop('com.eg.android.AlipayGphone')
 d.app_start('com.eg.android.AlipayGphone')
