@@ -1,16 +1,18 @@
+from logging import exception
 from pydoc import classname
+from random import random
+from re import T, U
+from tempfile import tempdir
 import time
+from xml.etree.ElementPath import xpath_tokenizer
 import uiautomator2 as u2
 
-d = u2.connect('192.168.0.106:5555') # alias for u2.connect_wifi('10.0.0.1')
+d = u2.connect('VED7N18C04000042') # alias for u2.connect_wifi('10.0.0.1')
 d.implicitly_wait(10.0) # 元素查找超时设置
-d.app_stop('cn.youth.news')
-d.app_start('cn.youth.news')
+# d.app_stop('cn.youth.news')
+# d.app_start('cn.youth.news')
 time.sleep(5)
 # 固定菜单点击位置
-d.click(0.708, 0.964)
-time.sleep(0.5)
-
 
 def closeDialog():
     if(d(resourceId="cn.youth.news:id/sq").exists):
@@ -18,21 +20,192 @@ def closeDialog():
             print("关闭弹窗")
     else:
         pass
+def readIndexHotArticls():
+    d.app_stop('cn.youth.news')
+    d.app_start('cn.youth.news')
+    time.sleep(3)
+    if d(resourceId="cn.youth.news:id/xj").exists:
+        d(resourceId="cn.youth.news:id/xj").click()
+        time.sleep(0.5)
+    else:
+        print("文章首页按钮获取失败！！！")
+        return
+    print("开始阅读热点文章")
+    time.sleep(3)
+    # 阅读30片左右文章
+    for i in range(0,10):
+        print("第"+ str(i + 1) + "轮")
+        for j in range(0,3):
+            print("第"+ str(i * 3 + j + 1) + "篇")
+            try:
+                print("查找第" + str(j + 1) + "篇元素")
+                d.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout['+ str(j + 1)+']').click()
+                time.sleep(3)
+                d.implicitly_wait(3)
+                # 实现下滑操作
+                d.watcher("watchReadMore").when(xpath='//*[@text="查看全文，奖励更多"]').click()
+                d.watcher.start()
+                x,y = d.window_size()
+                x1 = x / 2
+                y1 = y * 0.1
+                y2 = y * 0.9
+                d.swipe(x1,y1,x1,y2)
+                d.watcher.stop()
+                # for i in range(10):
+                #     d.swipe_ext("up",0.6)
+                #     try: 
+                #         d.xpath('//*[@text="查看全文，奖励更多"]').click()
+                #         print("点击查看更多！！")
+                #     except u2.xpath.XPathElementNotFoundError as e:
+                #         print("没有，继续")
+                d(resourceId="cn.youth.news:id/rb").click()
+            except u2.xpath.XPathElementNotFoundError as e:
+                print("第" + str(j + 1) + "篇文章未找到！")
+        if d(resourceId="cn.youth.news:id/xj").exists:
+            d(resourceId="cn.youth.news:id/xj").click()
+            time.sleep(1)
+        else:
+            print("文章首页按钮获取失败！！！")
+            return
+    print("阅读首页热点结束")
 
-# #签到方法
-# def signIn():
-#     try:
-#         print("开始签到")
-#         closeDialog()
-#         if(d(resourceId="cn.youth.news:id/ae5").exists):
-#             d(resourceId="cn.youth.news:id/ae5").click()
-#             print("签到成功")
-#             time.sleep(1)
-#         else:
-#             print("今天已经签到过啦！")
-#         closeDialog()
-#     except Exception as e:
-#         print("签到可能出现异常！！！！")
+#每日阅读文章20篇可 TODO 需要完善下翻引起的部分条码无法读取问题
+def readRangeArticls():
+    d.app_stop('cn.youth.news')
+    d.app_start('cn.youth.news')
+    time.sleep(3)
+    if d(resourceId="cn.youth.news:id/xj").exists:
+        d(resourceId="cn.youth.news:id/xj").click()
+        time.sleep(0.5)
+    else:
+        print("文章首页按钮获取失败！！！")
+        return
+    print("开始阅读文章")
+    d(resourceId="cn.youth.news:id/akx").click()
+    time.sleep(5)
+    
+    d.click(0.495, 0.984)
+    time.sleep(5)
+    # 广告按钮
+    # d.watcher("watchReadMore").when(xpath='//*[@text="查看全文，奖励更多"]').click()
+    d.watcher("watchAds").when(xpath='//*[@resource-id="android:id/content"]/android.widget.RelativeLayout[1]/android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]/android.view.View[1]').click()
+    d.watcher.start()
+    for count in range(0,10):
+        print(count + 1)
+        for i in range(0,4):
+            #if d(resourceId="cn.youth.news:id/tv_empty").exists
+            print("第"+ str(count*4 + (i + 1)) + "篇")
+            try:
+                xpathValue = '//*[@resource-id="cn.youth.news:id/a5i"]/android.widget.LinearLayout['+ str(i + 1) +']/android.widget.RelativeLayout[1]'
+                xpath = d.xpath(xpathValue)
+                print(xpath)
+                d.xpath(xpathValue).click()
+            except u2.exceptions.XPathElementNotFoundError as e:
+                print("读取"+ "第"+ str(count*4 + (i + 1)) + "篇"  +"文章时异常！！")
+                break
+            print("这里啊这里啊这里啊这里啊")
+            time.sleep(5)
+            d.implicitly_wait(3)
+            for i in range(10):
+                d.swipe_ext("up",0.6)
+                try: 
+                    d.xpath('//*[@text="查看全文，奖励更多"]').click()
+                    print("点击查看更多！！")
+                except u2.xpath.XPathElementNotFoundError as e:
+                    print("没有，继续")
+            d(resourceId="cn.youth.news:id/rb").click()
+            time.sleep(0.1)
+        d.swipe_ext("up",1)
+        d.swipe_ext("up",0.3)
+        # d.swipe(10,)
+        d.dump_hierarchy()
+    d.watcher.stop()
+    d.implicitly_wait(10)
+    print("阅读排行榜文章结束")
+
+def watchVideo():
+    d.app_stop('cn.youth.news')
+    d.app_start('cn.youth.news')
+    time.sleep(5)
+    d(resourceId="cn.youth.news:id/xm").click()
+    time.sleep(3)
+    watchVideoCounts = 0
+    #视频广告监听器
+    d.watcher("watchVideoAds").when(xpath="cn.youth.news:id/ama").click()
+    d.watcher.start()
+    while(watchVideoCounts < 10):
+        try:
+            #每次读取两行
+            for i in range(0,4):
+                d.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.FrameLayout[' + str(i + 1) +']/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]').click()
+                print("开始计数")
+                time.sleep(20)
+                watchVideoCounts = watchVideoCounts + 1
+                print("计数+1")
+                print("开始返回")
+                d(resourceId="cn.youth.news:id/d5").click()
+                time.sleep(1)
+        except u2.exceptions.XPathElementNotFoundError as e:
+            print("可能有广告,滑动")
+            d.swipe_ext("up",1)
+            time.sleep(1)
+
+    d.watcher.stop()
+    print("今日观看视频数：" + str(watchVideoCounts) + "次")
+
+
+    # for i in range(0,20):
+        # d.xpath('//*[@resource-id="cn.youth.news:id/a5i"]/android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]').click()
+        #          //*[@resource-id="cn.youth.news:id/a5i"]/android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]
+    #     # for j in range(0,3):
+    #     #     temp_xpath = '//*[@resource-id="cn.youth.news:id/a5j"]/android.widget.LinearLayout[' + str(j+1) + ']'
+    #     #     d.xpath(temp_xpath).click()
+    #     #     time.sleep(3)
+    #     #     #滑动阅读文章
+    #     #     for num in range(10):
+    #     #         d.swipe_ext("up", 0.6)
+    #     #         if d(text="查看全文，奖励更多").exists:
+    #     #             d(text="查看全文，奖励更多").click()
+    #     #         time.sleep(0.3) 
+    #     #     if d(resourceId="cn.youth.news:id/re").exists:
+    #     #         d(resourceId="cn.youth.news:id/re").click()
+    #     #         time.sleep(0.3)
+    #     temp_xpath = '//*[@resource-id="cn.youth.news:id/a5j"]/android.widget.LinearLayout[' + str(i+1) + ']'
+    #     d.xpath(temp_xpath).click()
+    #     for num in range(10):
+    #         d.swipe_ext("up", 0.6)
+    #         if d(text="查看全文，奖励更多").exists:
+    #             d(text="查看全文，奖励更多").click()
+    #             time.sleep(0.3) 
+    #         if d(resourceId="cn.youth.news:id/re").exists:
+    #             d(resourceId="cn.youth.news:id/re").click()
+    #             time.sleep(0.3)
+    #     d.swipe_ext("up", 1)
+    #     #d(resourceId="cn.youth.news:id/a7l").click()
+    #     time.sleep(1)
+
+#签到方法
+def signIn():
+    try:
+        d.app_stop('cn.youth.news')
+        d.app_start('cn.youth.news')
+        time.sleep(10)
+        print("开始签到")
+        closeDialog()
+        if d(resourceId="cn.youth.news:id/xl").exists:
+            d(resourceId="cn.youth.news:id/xl").click()
+        else:
+            print("签到页面获取失败！")
+            return
+        if(d(resourceId="cn.youth.news:id/ae5").exists):
+            d(resourceId="cn.youth.news:id/ae5").click()
+            print("签到成功")
+            time.sleep(1)
+        else:
+            print("今天已经签到过啦！")
+        closeDialog()
+    except Exception as e:
+        print("签到可能出现异常！！！！")
 
 #  #任务1 ，阅读文章，点击去阅读按钮
 # def readArticle():
@@ -84,3 +257,50 @@ def closeDialog():
 # taskList()
 
 
+def test():
+    d.app_stop('cn.youth.news')
+    d.app_start('cn.youth.news')
+    time.sleep(3)
+    if d(resourceId="cn.youth.news:id/xj").exists:
+        d(resourceId="cn.youth.news:id/xj").click()
+        time.sleep(0.5)
+    else:
+        print("文章首页按钮获取失败！！！")
+        return
+    print("开始阅读热点文章")
+    time.sleep(3)
+
+    #网络加载失败时监听器
+    d.watcher('netError').when(xpath='//*[@resource-id="cn.youth.news:id/ana"]').click()
+    d.watcher.start()
+    # 阅读30片左右文章
+    for i in range(0,10):
+        print("第"+ str(i + 1) + "轮")
+        for j in range(0,3):
+            print("第"+ str(i * 3 + j + 1) + "篇")
+            #文章连接
+            try:
+                d.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout['+ str(j + 1)+']').click()
+                time.sleep(5)
+            except u2.exceptions.XPathElementNotFoundError as e:
+                print("第"+ str(i * 3 + j + 1) + "篇文章读取失败")
+            #返回连接
+            if  d(resourceId="cn.youth.news:id/rb").exists:
+                 d(resourceId="cn.youth.news:id/rb").click()
+            else:
+                print("试图返回上一页失败！")
+        #刷新首页文章
+        if d(resourceId="cn.youth.news:id/xj").exists:
+            d(resourceId="cn.youth.news:id/xj").click()
+            time.sleep(1)
+        else:
+            print("读取首页文章失败")
+            return
+    print("阅读首页热点结束")
+    d.watcher.stop()
+
+
+test()
+# signIn()
+# readIndexHotArticls()
+watchVideo()
