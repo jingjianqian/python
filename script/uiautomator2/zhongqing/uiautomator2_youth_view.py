@@ -1,9 +1,8 @@
-from logging import exception
-from pydoc import classname
 from random import random
 from re import T, U
 from tempfile import tempdir
 import time
+from traceback import print_tb
 from xml.etree.ElementPath import xpath_tokenizer
 import uiautomator2 as u2
 
@@ -12,62 +11,85 @@ d.implicitly_wait(10.0) # 元素查找超时设置
 # d.app_stop('cn.youth.news')
 # d.app_start('cn.youth.news')
 time.sleep(5)
-# 固定菜单点击位置
 
+
+"""
+关闭弹窗方法
+"""
 def closeDialog():
     if(d(resourceId="cn.youth.news:id/sq").exists):
             d(resourceId="cn.youth.news:id/sq").click()
             print("关闭弹窗")
     else:
         pass
+
+"""
+阅读首页热门文章方法 每三次刷新一次文章
+"""
 def readIndexHotArticls():
     d.app_stop('cn.youth.news')
     d.app_start('cn.youth.news')
     time.sleep(3)
+    #点击首页TAB
     if d(resourceId="cn.youth.news:id/xj").exists:
         d(resourceId="cn.youth.news:id/xj").click()
-        time.sleep(0.5)
+        time.sleep(3)
     else:
         print("文章首页按钮获取失败！！！")
         return
     print("开始阅读热点文章")
     time.sleep(3)
-    # 阅读30片左右文章
+
+    #网络加载失败时监听器
+    d.watcher('netError').when(xpath='//*[@resource-id="cn.youth.news:id/ana"]').click()
+    d.watcher.start()
+
+    # 阅读30片左右文章 一次三篇，循环十次
     for i in range(0,10):
-        print("第"+ str(i + 1) + "轮")
+        temp = i
+        print("=====================================================第"+ str(temp + 1) + "轮==========================================================")
         for j in range(0,3):
-            print("第"+ str(i * 3 + j + 1) + "篇")
+            print('第' + str(i * 3 + (j + 1)) + '篇')
+
+            
+            #文章连接
             try:
-                print("查找第" + str(j + 1) + "篇元素")
                 d.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout['+ str(j + 1)+']').click()
+                time.sleep(5)
+            except u2.exceptions.XPathElementNotFoundError as e:
+                print("第"+ str(i * 3 + j + 1) + "篇文章读取失败")
+            #滚动阅读文章
+            d.implicitly_wait(2)
+            readMore = False
+            for i in range(10):
+                d.swipe_ext("up",0.6)
                 time.sleep(3)
-                d.implicitly_wait(3)
-                # 实现下滑操作
-                d.watcher("watchReadMore").when(xpath='//*[@text="查看全文，奖励更多"]').click()
-                d.watcher.start()
-                x,y = d.window_size()
-                x1 = x / 2
-                y1 = y * 0.1
-                y2 = y * 0.9
-                d.swipe(x1,y1,x1,y2)
-                d.watcher.stop()
-                # for i in range(10):
-                #     d.swipe_ext("up",0.6)
-                #     try: 
-                #         d.xpath('//*[@text="查看全文，奖励更多"]').click()
-                #         print("点击查看更多！！")
-                #     except u2.xpath.XPathElementNotFoundError as e:
-                #         print("没有，继续")
-                d(resourceId="cn.youth.news:id/rb").click()
-            except u2.xpath.XPathElementNotFoundError as e:
-                print("第" + str(j + 1) + "篇文章未找到！")
+                if readMore == False and d.xpath('//*[@text="查看全文，奖励更多"]').exists:
+                    try: 
+                        d.xpath('//*[@text="查看全文，奖励更多"]').click()
+                        # print("点击查看更多！！")
+                        readMore = True
+                    except u2.xpath.XPathElementNotFoundError as e:
+                        pass
+                        # print("还没到，继续")
+            #返回连接
+            if  d(resourceId="cn.youth.news:id/rb").exists:
+                 d(resourceId="cn.youth.news:id/rb").click()
+                 time.sleep(0.5)
+            else:
+                try:
+                    d(resourceId="cn.youth.news:id/d5").click()
+                except u2.xpath.XPathElementNotFoundError as e:
+                    print("试图返回上一页失败！")
+        #刷新首页文章
         if d(resourceId="cn.youth.news:id/xj").exists:
             d(resourceId="cn.youth.news:id/xj").click()
-            time.sleep(1)
+            time.sleep(3)
         else:
-            print("文章首页按钮获取失败！！！")
+            print("读取首页文章失败")
             return
     print("阅读首页热点结束")
+    d.watcher.stop()
 
 #每日阅读文章20篇可 TODO 需要完善下翻引起的部分条码无法读取问题
 def readRangeArticls():
@@ -89,12 +111,14 @@ def readRangeArticls():
     # 广告按钮
     # d.watcher("watchReadMore").when(xpath='//*[@text="查看全文，奖励更多"]').click()
     d.watcher("watchAds").when(xpath='//*[@resource-id="android:id/content"]/android.widget.RelativeLayout[1]/android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]/android.view.View[1]').click()
+    d.watcher("isVideosAds").when(xpath="cn.youth.news:id/a3x").click()
     d.watcher.start()
     for count in range(0,10):
         print(count + 1)
-        for i in range(0,4):
+        for i in range(0,3):
             #if d(resourceId="cn.youth.news:id/tv_empty").exists
-            print("第"+ str(count*4 + (i + 1)) + "篇")
+            articleIndex = int(i) + 1 + int(count) * i 
+            print("第"+ str(articleIndex) + "篇")
             try:
                 xpathValue = '//*[@resource-id="cn.youth.news:id/a5i"]/android.widget.LinearLayout['+ str(i + 1) +']/android.widget.RelativeLayout[1]'
                 xpath = d.xpath(xpathValue)
@@ -189,7 +213,7 @@ def signIn():
     try:
         d.app_stop('cn.youth.news')
         d.app_start('cn.youth.news')
-        time.sleep(10)
+        time.sleep(6)
         print("开始签到")
         closeDialog()
         if d(resourceId="cn.youth.news:id/xl").exists:
@@ -258,49 +282,12 @@ def signIn():
 
 
 def test():
-    d.app_stop('cn.youth.news')
-    d.app_start('cn.youth.news')
-    time.sleep(3)
-    if d(resourceId="cn.youth.news:id/xj").exists:
-        d(resourceId="cn.youth.news:id/xj").click()
-        time.sleep(0.5)
-    else:
-        print("文章首页按钮获取失败！！！")
-        return
-    print("开始阅读热点文章")
-    time.sleep(3)
-
-    #网络加载失败时监听器
-    d.watcher('netError').when(xpath='//*[@resource-id="cn.youth.news:id/ana"]').click()
-    d.watcher.start()
-    # 阅读30片左右文章
-    for i in range(0,10):
-        print("第"+ str(i + 1) + "轮")
-        for j in range(0,3):
-            print("第"+ str(i * 3 + j + 1) + "篇")
-            #文章连接
-            try:
-                d.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout['+ str(j + 1)+']').click()
-                time.sleep(5)
-            except u2.exceptions.XPathElementNotFoundError as e:
-                print("第"+ str(i * 3 + j + 1) + "篇文章读取失败")
-            #返回连接
-            if  d(resourceId="cn.youth.news:id/rb").exists:
-                 d(resourceId="cn.youth.news:id/rb").click()
-            else:
-                print("试图返回上一页失败！")
-        #刷新首页文章
-        if d(resourceId="cn.youth.news:id/xj").exists:
-            d(resourceId="cn.youth.news:id/xj").click()
-            time.sleep(1)
-        else:
-            print("读取首页文章失败")
-            return
-    print("阅读首页热点结束")
-    d.watcher.stop()
-
-
-test()
+   for i in range(0,10):
+       temp = i
+       print('========================================第' + str(temp) + '轮=====================')
+       for j in range(0,3):
+           print('第' + str(i * 3 + (j + 1)) + '篇')
+# test()
 # signIn()
-# readIndexHotArticls()
-watchVideo()
+readIndexHotArticls()
+# watchVideo()
