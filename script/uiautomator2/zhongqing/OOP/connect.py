@@ -1,9 +1,6 @@
 """设备连接状态"""
 from asyncio.windows_events import NULL
-from typing_extensions import Self
-from pyparsing import null_debug_action
-from uiautomator2 import u2
-import os,subprocess
+import subprocess
 
 class PhoneStatus:
   def __init__(self) -> None:
@@ -15,7 +12,7 @@ class PhoneStatus:
 
 
  
-  def getDevices(self):
+  def getDevices():
     try:
       devices = subprocess.getstatusoutput("adb devices")
       if devices[0] == 0:
@@ -28,11 +25,11 @@ class PhoneStatus:
    
 
   """手机连接状态方法"""
-  def  phoneStatus(Self):
+  def  phoneStatus():
     pass
   
   def network():
     pass
 
-  def connectPhoneByAdb(self):
+  def connectPhoneByAdb():
     pass

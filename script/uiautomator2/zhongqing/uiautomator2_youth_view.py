@@ -10,7 +10,8 @@ from xml.etree.ElementPath import xpath_tokenizer
 import uiautomator2 as u2
 import os,subprocess
 
-# d = u2.connect('VED7N18C04000042') # alias for u2.connect_wifi('10.0.0.1')
+d = u2.connect('VED7N18C04000042') # alias for u2.connect_wifi('10.0.0.1')
+
 # d.implicitly_wait(10.0) # 元素查找超时设置
 # d.app_stop('cn.youth.news')
 # d.app_start('cn.youth.news')
@@ -34,13 +35,13 @@ def readIndexHotArticls():
     d.app_stop('cn.youth.news')
     d.app_start('cn.youth.news')
     time.sleep(3)
-    #点击首页TAB
-    if d(resourceId="cn.youth.news:id/xj").exists:
-        d(resourceId="cn.youth.news:id/xj").click()
-        time.sleep(3)
-    else:
-        print("文章首页按钮获取失败！！！")
-        return
+    # #点击首页TAB
+    # if d(resourceId="cn.youth.news:id/xj").exists:
+    #     d(resourceId="cn.youth.news:id/xj").click()
+    #     time.sleep(3)
+    # else:
+    #     print("文章首页按钮获取失败！！！")
+    #     return
     print("开始阅读热点文章")
     time.sleep(3)
 
@@ -53,8 +54,11 @@ def readIndexHotArticls():
         temp = i
         print("=====================================================第"+ str(temp + 1) + "轮==========================================================")
         for j in range(0,3):
-            print('第' + str(i * 3 + (j + 1)) + '篇')
-
+            print(i*3)
+            print(j+1)
+            indexAr = (i*3) + (j + 1)
+            print(indexAr)
+            print('第' + str(indexAr) + '篇')
 
             #文章连接
             try:
@@ -65,7 +69,7 @@ def readIndexHotArticls():
             #滚动阅读文章
             d.implicitly_wait(2)
             readMore = False
-            for i in range(10):
+            for i in range(20):
                 d.swipe_ext("up",0.6)
                 time.sleep(3)
                 if readMore == False and d.xpath('//*[@text="查看全文，奖励更多"]').exists:
@@ -286,19 +290,9 @@ def signIn():
 
 
 def test():
-    try:
-        '''获取设备列表信息，并用"\r\n"拆分'''
-        deviceInfo= subprocess.check_output('adb devices').split("\r\n")
-        '''如果没有链接设备或者设备读取失败，第二个元素为空'''
-        if deviceInfo[1]=='':
-            return False
-        else:
-            print(deviceInfo[1])
-            return True
-    except Exception as e:
-        print("Device Connect Fail:")
-        print(e)
-# test()
+    print(d.app_stop('cn.youth.news'))
+    print(d.app_start('cn.youth.news'))
+test()
  
  
 def deal_cmd(cmd):
@@ -314,15 +308,15 @@ def deal_result():
         print(e)
     
 
-deal_result()
+# deal_result()
 
 # signIn()
-# try:
-#     readIndexHotArticls()
-# except Exception as e:
-#     print("阅读文章遇到问题！！！")
-# try:   
-#     watchVideo()
-# except Exception as e:
-#     print(e)
-#     print("看视频遇到问题")
+try:
+    readIndexHotArticls()
+except Exception as e:
+    print("阅读文章遇到问题！！！")
+try:   
+    watchVideo()
+except Exception as e:
+    print(e)
+    print("看视频遇到问题")
