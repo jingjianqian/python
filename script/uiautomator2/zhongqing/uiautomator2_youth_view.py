@@ -1,16 +1,20 @@
 from random import random
 from re import T, U
+import re
 from tempfile import tempdir
 import time
+from tkinter import E
 from traceback import print_tb
+from unittest import result
 from xml.etree.ElementPath import xpath_tokenizer
 import uiautomator2 as u2
+import os,subprocess
 
-d = u2.connect('VED7N18C04000042') # alias for u2.connect_wifi('10.0.0.1')
-d.implicitly_wait(10.0) # 元素查找超时设置
+# d = u2.connect('VED7N18C04000042') # alias for u2.connect_wifi('10.0.0.1')
+# d.implicitly_wait(10.0) # 元素查找超时设置
 # d.app_stop('cn.youth.news')
 # d.app_start('cn.youth.news')
-time.sleep(5)
+# time.sleep(5)
 
 
 """
@@ -51,7 +55,7 @@ def readIndexHotArticls():
         for j in range(0,3):
             print('第' + str(i * 3 + (j + 1)) + '篇')
 
-            
+
             #文章连接
             try:
                 d.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout['+ str(j + 1)+']').click()
@@ -282,12 +286,43 @@ def signIn():
 
 
 def test():
-   for i in range(0,10):
-       temp = i
-       print('========================================第' + str(temp) + '轮=====================')
-       for j in range(0,3):
-           print('第' + str(i * 3 + (j + 1)) + '篇')
+    try:
+        '''获取设备列表信息，并用"\r\n"拆分'''
+        deviceInfo= subprocess.check_output('adb devices').split("\r\n")
+        '''如果没有链接设备或者设备读取失败，第二个元素为空'''
+        if deviceInfo[1]=='':
+            return False
+        else:
+            print(deviceInfo[1])
+            return True
+    except Exception as e:
+        print("Device Connect Fail:")
+        print(e)
 # test()
+ 
+ 
+def deal_cmd(cmd):
+	# result = subprocess.getstatusoutput(cmd)
+    return subprocess.getstatusoutput(cmd)
+
+
+def deal_result():
+    try:
+        devices = subprocess.getstatusoutput("adb devices")
+        print(devices[1].split("\n\t"))
+    except Exception as e:
+        print(e)
+    
+
+deal_result()
+
 # signIn()
-readIndexHotArticls()
-# watchVideo()
+# try:
+#     readIndexHotArticls()
+# except Exception as e:
+#     print("阅读文章遇到问题！！！")
+# try:   
+#     watchVideo()
+# except Exception as e:
+#     print(e)
+#     print("看视频遇到问题")
