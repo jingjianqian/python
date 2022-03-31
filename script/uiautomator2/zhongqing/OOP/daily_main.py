@@ -6,24 +6,24 @@ from daily_sign import Sign
 """
 app每日任务主线
 """
-#TODO add some init confige
+
+
+# TODO add some init config
 class Daily:
-  def __init__(self):
-    # self.phoneStatus = PhoneStatus()
-    # self.deviceName = self.phoneStatus.getDevices()
-    pass
+    def __init__(self):
+        self.phoneStatus = PhoneStatus()
+        self.deviceName = self.phoneStatus.get_devices()
+        self.device = u2.connect(self.deviceName)
+        pass
 
-  # TODO begin daily things
-  def start_daily(self):
-    print("签到！")
-    phontStatus = PhoneStatus()
-    sign = Sign(phontStatus.getDevices,None)
-    sign.start_sign()
-    print(sign.signStatus)
+    # TODO begin daily things
+    def start_daily(self):
+        print("签到！")
+        sign = Sign(self.deviceName, self.device)
+        sign.start_sign()
+        print(sign.signStatus)
 
 
-
-daily = Daily()
-
-daily.start_daily()
-
+if __name__ == '__main__':
+    daily = Daily()
+    daily.start_daily()
