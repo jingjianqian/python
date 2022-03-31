@@ -9,12 +9,15 @@ app每日任务主线
 #TODO add some init confige
 class Daily:
   def __init__(self):
-    self.deviceName = PhoneStatus.getDevices()
+    # self.phoneStatus = PhoneStatus()
+    # self.deviceName = self.phoneStatus.getDevices()
+    pass
 
   # TODO begin daily things
   def start_daily(self):
     print("签到！")
-    sign = Sign(self.deviceName,None)
+    phontStatus = PhoneStatus()
+    sign = Sign(phontStatus.getDevices,None)
     sign.start_sign()
     print(sign.signStatus)
 

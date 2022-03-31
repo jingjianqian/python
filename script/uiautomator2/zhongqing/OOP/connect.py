@@ -1,14 +1,9 @@
 """设备连接状态"""
-from asyncio.windows_events import NULL
 import subprocess
 
 class PhoneStatus:
-  def __init__(self) -> None:
-    self.phoneStatus = self.phoneStatus()
-    self.devices = self.getDevices() # 默认只允许一台手机连接adb
-    self.network = self.network()
-
-
+  def __init__(self):
+    pass
 
 
  
@@ -26,7 +21,7 @@ class PhoneStatus:
 
   """手机连接状态方法"""
   def  phoneStatus():
-    pass
+    print("12312312312312312312313123")
   
   def network():
     pass
