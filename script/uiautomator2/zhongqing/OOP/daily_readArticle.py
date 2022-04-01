@@ -2,6 +2,7 @@
 import re
 import time
 
+import uiautomator2.exceptions as u2exceptions
 from uiautomator2.exceptions import XPathElementNotFoundError, UiObjectNotFoundError
 
 from script.uiautomator2.zhongqing.OOP.setttings import Settings
@@ -13,43 +14,49 @@ class ReadArticles:
         self.setting = Settings()
         self.device = device
         self.readArticles = 0
+        self.haveFinishDaily = False
 
     def start(self):
-        # 任务详情数据
-        text = self.get_daily_details()
-        if text is not None:
-            print(str(text[0]).split('/'))
-        else:
-            print("获取任务数据异常")
-
         # 开始阅读文章
-        print("===================" + str(self.__class__) + ":开始阅读文章=============================================")
+        try:
+            self.device.press("home")
+            time.sleep(0.5)
+            self.device.app_stop('cn.youth.news')
+            self.device.app_start('cn.youth.news')
+            time.sleep(5)
+        except XPathElementNotFoundError as e:
+            print(e)
         restart = 0
-        while self.readArticles < self.setting.restartTimes and restart < 50:
+        while self.haveFinishDaily is not True:
             # 阅读文章
             try:
-                self.device.press("home")
-                self.device.app_stop('cn.youth.news')
-                self.device.app_start('cn.youth.news')
-                time.sleep(3)
                 print("阅读文章")
                 # 网络加载失败时监听器
                 temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout').all()
                 if len(temp_articles) > 0:
                     for article in temp_articles:
                         article.click()
-                        time.sleep(3)
-                        self.device(resourceId="cn.youth.news:id/rb").click()
                         time.sleep(1)
-                        self.readArticles += 1
+                        self.read_article()
+                        if self.device(resourceId="cn.youth.news:id/rb").exists:
+                            self.device(resourceId="cn.youth.news:id/rb").click()
+                            time.sleep(1)
+                            self.readArticles += 1
+                        elif self.device(resourceId="cn.youth.news:id/d5").exists:
+                            self.device(resourceId="cn.youth.news:id/d5").click()
+                            time.sleep(1)
+                        else:
+                            print("返回异常")
                 else:
-                    raise XPathElementNotFoundError
+                    print("获取文章列表失败")
                 self.device.swipe_ext("up", 1)
                 self.device.swipe_ext("up", 0.6)
-                restart = self.setting.restartTimes
+                if self.readArticles > self.setting.articles:
+                    self.haveFinishDaily = self.have_finish_daily()
             except UiObjectNotFoundError as e:
-                restart += 1
                 print("读取文章异常，重启app充实")
+                restart += 1
+                self.start()
         print("===================" + str(self.__class__) + ":结束阅读文章=============================================")
 
     # 获取任务
@@ -75,15 +82,40 @@ class ReadArticles:
                 else:
                     print("阅读文章任务已经完成！")
                     restart += 1
-                    print(restart < self.setting.restartTimes)
-                    break
+                    return [self.setting.articles, self.setting.articles]
             except XPathElementNotFoundError as e:
                 print("获取异常")
                 restart += 1
                 print(restart < self.setting.restartTimes)
         print("===================" + self.__class__ + ":获取任务结束=============================================")
 
+    # 判断任务是否完成
+    def have_finish_daily(self) -> str:
+        # 任务详情数据
+        text = self.get_daily_details()
+        if text is None:
+            print("获取任务数据异常")
+            return None
+        elif text is not None and int(str(text[0]).split('/')[0]) < int(str(text[0]).split('/')[1]):
+            print("===================" + str(self.__class__) + ":开始阅读文章=============================================")
+            self.readArticles = int(str(text[0]).split('/')[0])
+            return False
+        elif text is not None and int(str(text[0]).split('/')[0]) == int(str(text[0]).split('/')[1]):
+            print("今天已经完成阅读文章任务，请收取金币")
+            return True
+
     # 阅读文章
     def read_article(self):
-        # self.device.
-        pass
+        self.device.implicitly_wait(2)
+        read_more = False
+        for i in range(20):
+            self.device.swipe_ext("up", 1)
+            time.sleep(1.5)
+            if read_more is False and self.device.xpath('//*[@text="查看全文，奖励更多"]').exists:
+                try:
+                    self.device.xpath('//*[@text="查看全文，奖励更多"]').click()
+                    # print("点击查看更多！！")
+                    read_more = True
+                except XPathElementNotFoundError as e:
+                    pass
+                    # print("还没到，继续")
