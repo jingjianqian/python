@@ -37,7 +37,8 @@ class ReadArticles:
                     for article in temp_articles:
                         article.click()
                         time.sleep(1)
-                        self.read_article()
+                        if self.read_article() is  False:
+                            self.start()
                         if self.device(resourceId="cn.youth.news:id/rb").exists:
                             self.device(resourceId="cn.youth.news:id/rb").click()
                             time.sleep(1)
@@ -47,8 +48,10 @@ class ReadArticles:
                             time.sleep(1)
                         else:
                             print("返回异常")
+                            self.start()
                 else:
                     print("获取文章列表失败")
+                    self.start()
                 self.device.swipe_ext("up", 1)
                 self.device.swipe_ext("up", 0.6)
                 if self.readArticles > self.setting.articles:
@@ -71,7 +74,7 @@ class ReadArticles:
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
                 self.device(resourceId="cn.youth.news:id/a7k").click()
-                time.sleep(2)
+                time.sleep(1)
                 if self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").get_text()
                     restart = self.setting.restartTimes
@@ -109,8 +112,15 @@ class ReadArticles:
         self.device.implicitly_wait(2)
         read_more = False
         for i in range(20):
+            # 非正常文章排版 无返回按钮 直接过滤
+            if str(self.device(resourceId="cn.youth.news:id/rb").exists) != "True" and str(self.device(resourceId="cn.youth.news:id/d5").exists) != "True":
+                return False
             self.device.swipe_ext("up", 1)
             time.sleep(1.5)
+            # 网络加载错误的情况
+            if self.device(resourceId="cn.youth.news:id/ana").exists:
+                self.device(resourceId="cn.youth.news:id/ana").click()
+                time.sleep(2)
             if read_more is False and self.device.xpath('//*[@text="查看全文，奖励更多"]').exists:
                 try:
                     self.device.xpath('//*[@text="查看全文，奖励更多"]').click()
@@ -119,3 +129,4 @@ class ReadArticles:
                 except XPathElementNotFoundError as e:
                     pass
                     # print("还没到，继续")
+        self.device.implicitly_wait(10)
