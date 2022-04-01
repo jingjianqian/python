@@ -50,7 +50,7 @@ def readIndexHotArticls():
     d.watcher.start()
 
     # 阅读30片左右文章 一次三篇，循环十次
-    for i in range(0,10):
+    for i in range(0, 10):
         temp = i
         print("=====================================================第"+ str(temp + 1) + "轮==========================================================")
         for j in range(0,3):

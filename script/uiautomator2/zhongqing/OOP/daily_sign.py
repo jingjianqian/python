@@ -1,7 +1,7 @@
 """每日签到类"""
-from connect import PhoneStatus
+from uiautomator2.exceptions import XPathElementNotFoundError
 
-import uiautomator2 as device1
+from connect import PhoneStatus
 
 from setttings import Settings
 
@@ -19,17 +19,33 @@ class Sign:
 
     # 签到
     def start_sign(self):
-        try:
-            if self.get_sign_status() is True:
-                if self.device(resourceId="cn.youth.news:id/awo").exists:
-                    self.device(resourceId="cn.youth.news:id/awo").click()
-                elif self.device(resourceId="cn.youth.news:id/title", text="今日签到").exists:
-                    self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.RelativeLayout[1]/android.widget.FrameLayout[1]').click()
-                    self.device(resourceId="cn.youth.news:id/awo").click()
+        while self.signStatus is not True and self.restartTimes > 0:
+            try:
+                if self.get_sign_status() is True:
+                    if self.device(resourceId="cn.youth.news:id/awo").exists:
+                        self.device(resourceId="cn.youth.news:id/awo").click()
+                        self.signStatus = True
+                        self.restartTimes = 0
+                        return True
+                    elif self.device(resourceId="cn.youth.news:id/title", text="今日签到").exists:
+                        self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.RelativeLayout[1]/android.widget.FrameLayout[1]').click()
+                        self.device(resourceId="cn.youth.news:id/awo").click()
+                        self.signStatus = True
+                        self.restartTimes = 0
+                        return True
+                    else:
+                        self.signStatus = False
+                        print("可能已经签到")
+                        self.restartTimes -= 1
+                        return False
                 else:
+                    self.signStatus = False
                     return False
-        except device1.xpath.XPathElementNotFoundError as e:
-            return False
+            except XPathElementNotFoundError as e:
+                print(e)
+                self.signStatus = False
+                self.restartTimes += 1
+                return False
 
     # 判断签到状态
     def get_sign_status(self):

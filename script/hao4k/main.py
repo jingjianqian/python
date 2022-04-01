@@ -1,5 +1,6 @@
 """main主线任务"""
-from sign import Sign
+
+
 from login import Login
 
 

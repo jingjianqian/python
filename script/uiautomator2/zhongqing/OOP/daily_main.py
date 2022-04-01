@@ -2,6 +2,7 @@ import uiautomator2 as u2
 
 from connect import PhoneStatus
 from daily_sign import Sign
+from script.uiautomator2.zhongqing.OOP.daily_readArticle import ReadArticles
 
 """
 app每日任务主线
@@ -21,7 +22,8 @@ class Daily:
         print("签到！")
         sign = Sign(self.deviceName, self.device)
         sign.start_sign()
-        print(sign.signStatus)
+        read_articles = ReadArticles(self.deviceName, self.device)
+        read_articles.start()
 
 
 if __name__ == '__main__':
