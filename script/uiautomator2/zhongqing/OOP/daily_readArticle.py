@@ -5,6 +5,7 @@ import time
 import uiautomator2.exceptions as u2exceptions
 from uiautomator2.exceptions import XPathElementNotFoundError, UiObjectNotFoundError
 
+from script.uiautomator2.zhongqing.OOP.daily_common import Common
 from script.uiautomator2.zhongqing.OOP.setttings import Settings
 
 
@@ -20,15 +21,8 @@ class ReadArticles:
         if self.have_finish_daily() is True:
             return True
         # 开始阅读文章
-        try:
-            self.device.press("home")
-            time.sleep(0.5)
-            self.device.app_stop('cn.youth.news')
-            self.device.app_start('cn.youth.news')
-            time.sleep(5)
-        except XPathElementNotFoundError as e:
-            print(e)
-        restart = 0
+        # 启动app
+        Common(self.device).start_app('cn.youth.news')
         while self.haveFinishDaily is not True:
             # 阅读文章
             try:
@@ -61,7 +55,6 @@ class ReadArticles:
                     self.haveFinishDaily = self.have_finish_daily()
             except UiObjectNotFoundError as e:
                 print("读取文章异常，重启app充实")
-                restart += 1
                 self.start()
         print("===================" + str(self.__class__) + ":结束此轮阅读文章=============================================")
 
@@ -77,6 +70,7 @@ class ReadArticles:
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
                 self.device(resourceId="cn.youth.news:id/a7k").click()
+                print(self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").exists)
                 time.sleep(1)
                 if self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").get_text()
@@ -84,11 +78,11 @@ class ReadArticles:
                     p1 = re.compile(r'[(](.*?)[)]', re.S)
                     text = re.findall(p1, text)
                     print("获取成功")
+                    print(text)
                     return text
                 else:
                     print("阅读文章任务已经完成！")
-                    restart += 1
-                    return [self.setting.articles, self.setting.articles]
+                    return [str(self.setting.articles) + '/' + str(self.setting.articles)]
             except XPathElementNotFoundError as e:
                 print("获取异常")
                 restart += 1
@@ -99,6 +93,7 @@ class ReadArticles:
     def have_finish_daily(self) -> str:
         # 任务详情数据
         text = self.get_daily_details()
+        print(text)
         if text is None:
             print("获取任务数据异常")
             return None
@@ -107,6 +102,9 @@ class ReadArticles:
             self.readArticles = int(str(text[0]).split('/')[0])
             return False
         elif text is not None and int(str(text[0]).split('/')[0]) == int(str(text[0]).split('/')[1]):
+            print("今天已经完成阅读文章任务，请收取金币")
+            return True
+        elif text is True:
             print("今天已经完成阅读文章任务，请收取金币")
             return True
 
