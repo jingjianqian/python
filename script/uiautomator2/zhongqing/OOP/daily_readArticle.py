@@ -17,6 +17,8 @@ class ReadArticles:
         self.haveFinishDaily = False
 
     def start(self):
+        if self.have_finish_daily() is True:
+            return True
         # 开始阅读文章
         try:
             self.device.press("home")
@@ -51,6 +53,7 @@ class ReadArticles:
                             self.start()
                 else:
                     print("获取文章列表失败")
+
                     self.start()
                 self.device.swipe_ext("up", 1)
                 self.device.swipe_ext("up", 0.6)
@@ -60,7 +63,7 @@ class ReadArticles:
                 print("读取文章异常，重启app充实")
                 restart += 1
                 self.start()
-        print("===================" + str(self.__class__) + ":结束阅读文章=============================================")
+        print("===================" + str(self.__class__) + ":结束此轮阅读文章=============================================")
 
     # 获取任务
     def get_daily_details(self):
