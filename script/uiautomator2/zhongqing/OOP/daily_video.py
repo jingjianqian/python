@@ -27,7 +27,23 @@ class Videos:
         """3 循环完成任务"""
         while self.haveFinishDaily is not True:
             try:
-                pass
+                print("观看视频")
+                # 视频菜单
+                self.device(resourceId="").click()
+                time.sleep(0.3)
+                temp_videos = self.device.xpath('').all()
+                if len(temp_videos) > 0:
+                    for video in temp_videos:
+                        video.click()
+                        time.sleep(3)
+                        if self.device(resourceId="cn.youth.news:id/rb").exists:
+                            self.device(resourceId="cn.youth.news:id/rb").click()
+                            time.sleep(0.3)
+                        elif self.device(resourceId="cn.youth.news:id/d5").exists:
+                            self.device(resourceId="cn.youth.news:id/d5").click()
+                            time.sleep(0.3)
+                        else:
+                            print("返回异常")
             except UiObjectNotFoundError as e:
                 pass
 

@@ -33,15 +33,15 @@ class ReadArticles:
                     for article in temp_articles:
                         article.click()
                         time.sleep(1)
-                        if self.read_article() is  False:
+                        if self.read_article() is False:
                             self.start()
                         if self.device(resourceId="cn.youth.news:id/rb").exists:
                             self.device(resourceId="cn.youth.news:id/rb").click()
-                            time.sleep(1)
+                            time.sleep(0.2)
                             self.readArticles += 1
                         elif self.device(resourceId="cn.youth.news:id/d5").exists:
                             self.device(resourceId="cn.youth.news:id/d5").click()
-                            time.sleep(1)
+                            time.sleep(0.2)
                         else:
                             print("返回异常")
                             self.start()
