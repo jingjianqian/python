@@ -9,3 +9,4 @@ class Settings:
         self.phonePassword = 920221  # 手机解锁密码
         self.articles = 20  # 默认需要阅读文章的次数
         self.videos = 10  # 默认需要观看视频的次数
+        self.HotShares = 3  # 默认需要分享的文章

@@ -70,7 +70,7 @@ class ReadArticles:
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
                 self.device(resourceId="cn.youth.news:id/a7k").click()
-                time.sleep(3)
+                time.sleep(5)
                 if self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").get_text()
                     restart = self.setting.restartTimes
@@ -89,7 +89,7 @@ class ReadArticles:
         print("===================" + self.__class__ + ":获取任务结束=============================================")
 
     # 判断任务是否完成
-    def have_finish_daily(self) -> str:
+    def have_finish_daily(self):
         # 任务详情数据
         text = self.get_daily_details()
         if text is None:
@@ -101,8 +101,10 @@ class ReadArticles:
             return False
         elif text is not None and int(str(text[0]).split('/')[0]) == int(str(text[0]).split('/')[1]):
             print("今天已经完成阅读文章任务，请收取金币")
+            self.haveFinishDaily = True
             return True
         elif text is True:
+            self.haveFinishDaily = True
             print("今天已经完成阅读文章任务，请收取金币")
             return True
 

@@ -27,10 +27,10 @@ class Videos:
         """3 循环完成任务"""
         while self.haveFinishDaily is not True:
             try:
-                print("观看视频")
+                print("观看视频11111")
                 # 视频菜单
                 self.device(resourceId="cn.youth.news:id/a7l").click()
-                time.sleep(0.3)
+                time.sleep(3)
                 temp_videos = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.FrameLayout').all()
                 if len(temp_videos) > 0 and self.readVideos < self.settings.videos:
                     for video in temp_videos:
@@ -48,8 +48,10 @@ class Videos:
                             print("返回异常")
                             self.start()
                 else:
+                    print("视频列表错误")
                     self.start()
             except UiObjectNotFoundError as e:
+                print(e)
                 self.start()
 
         """4 结束"""
