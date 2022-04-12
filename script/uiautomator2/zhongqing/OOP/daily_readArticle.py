@@ -70,8 +70,7 @@ class ReadArticles:
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
                 self.device(resourceId="cn.youth.news:id/a7k").click()
-                print(self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").exists)
-                time.sleep(1)
+                time.sleep(3)
                 if self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").get_text()
                     restart = self.setting.restartTimes
@@ -93,7 +92,6 @@ class ReadArticles:
     def have_finish_daily(self) -> str:
         # 任务详情数据
         text = self.get_daily_details()
-        print(text)
         if text is None:
             print("获取任务数据异常")
             return None
