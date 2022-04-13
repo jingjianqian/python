@@ -4,10 +4,13 @@ import time
 
 from uiautomator2.exceptions import XPathElementNotFoundError
 
+from script.uiautomator2.zhongqing.OOP.setttings import Settings
+
 
 class Common:
     def __init__(self, device):
         self.device = device
+        self.setting = Settings()
 
     # 启动app
     def start_app(self, apps_package_name):
