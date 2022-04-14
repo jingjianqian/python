@@ -1,4 +1,6 @@
 """热门文章分析"""
+import time
+
 from uiautomator2 import UiObjectNotFoundError
 
 from script.uiautomator2.zhongqing.OOP.daily_common import Common
@@ -20,8 +22,22 @@ class HotShare:
         if self.hava_finished() is True:
             return True
         try:
+            # 1 跳转到分享界面
             self.device.implicitly_wait(2)
             self.device(resourceId="cn.youth.news:id/hl", text='分享资讯到朋友圈或微信3次，被好友阅读后可共得1800青豆').right(resourceId="cn.youth.news:id/eb").click()
+            time.sleep(4)
+            # 2 点击分享后返回到app
+            # 2.1 分享按钮
+            self.device().click()
+            time.sleep(0.5)
+            # 2.2 设置分享标题
+            share_title = "shared by python script"
+            # 2.3 设置可见
+            self.device().click()
+            time.sleep(0.5)
+            # 2.4 确认分享
+            self.device().click
+            time.sleep(1)
         except UiObjectNotFoundError as e:
             print()
             self.start()

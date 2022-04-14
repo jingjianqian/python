@@ -1,4 +1,6 @@
 """每日签到类"""
+import time
+
 from uiautomator2.exceptions import XPathElementNotFoundError
 
 from connect import PhoneStatus
@@ -53,11 +55,12 @@ class Sign:
             self.device.app_stop("cn.youth.news")
             self.device.app_start("cn.youth.news")
             self.device(resourceId="cn.youth.news:id/a7k").click()
+            time.sleep(2)
             if 1:
                 return True
             else:
                 False
-        except Exception as e:
+        except UiObjectNotFoundError as e:
             self.restartTimes += 1
             print("第" + str(10 - self.restartTimes) + "次获取签到状态失败")
             if self.restartTimes > 0:
