@@ -26,11 +26,23 @@ class HotShare:
             self.device.implicitly_wait(2)
             self.device(resourceId="cn.youth.news:id/hl", text='分享资讯到朋友圈或微信3次，被好友阅读后可共得1800青豆').right(resourceId="cn.youth.news:id/eb").click()
             time.sleep(4)
+            if self.device(text="转发资讯继续赚钱").exists:
+                self.device(text="转发资讯继续赚钱").click()
+                time.sleep(0.5)
+                self.device(className="android.widget.Button").click()
+                time.sleep(0.5)
             share_buttons = self.device(text="转发赚钱")
             for i in range(3):
                 share_buttons[i].click()
                 time.sleep(3)
-                self.device(resourceId="com.tencent.mm:id/fz").click()
+                self.device.xpath('//*[@resource-id="com.tencent.mm:id/ks3"]/android.widget.LinearLayout[1]').set_text("文件传输助手")
+                time.sleep(0.5)
+                self.device(resourceId="com.tencent.mm:id/kpx").click()
+                time.sleep(0.5)
+                self.device(resourceId="com.tencent.mm:id/gv3").click()
+                time.sleep(0.5)
+                self.device(resourceId="com.tencent.mm:id/gup").click()
+                # self.device(resourceId="com.tencent.mm:id/fz").click()
 
             # 2 点击分享后返回到app
             # # 2.1 分享按钮

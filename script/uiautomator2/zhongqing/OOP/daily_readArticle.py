@@ -10,53 +10,96 @@ from script.uiautomator2.zhongqing.OOP.setttings import Settings
 
 
 class ReadArticles:
-    def __init__(self, device_name, device) -> None:
-        self.deviceName = device_name
+    def __init__(self, device) -> None:
         self.setting = Settings()
         self.device = device
         self.readArticles = 0
         self.haveFinishDaily = False
+        self.common = Common(self.device)
 
     def start(self):
-        if self.have_finish_daily() is True:
-            return True
-        # 开始阅读文章
-        # 启动app
-        Common(self.device).start_app('cn.youth.news')
-        while self.haveFinishDaily is not True:
-            # 阅读文章
+        """
+        1 启动app
+        """
+        print("==========================>开始阅读文章=========================")
+        print("启动app中")
+        self.common.start_app()
+        """
+        2 跳转到观看文章菜单开始观看文章
+        """
+        restart = 0
+        while restart < self.setting.restartTimes | self.readArticles > 10:
             try:
-                print("阅读文章")
-                # 网络加载失败时监听器
-                temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout').all()
-                if len(temp_articles) > 0:
-                    for article in temp_articles:
-                        article.click()
-                        time.sleep(1)
-                        if self.read_article() is False:
-                            self.start()
-                        if self.device(resourceId="cn.youth.news:id/rb").exists:
-                            self.device(resourceId="cn.youth.news:id/rb").click()
-                            time.sleep(0.2)
+                for i in range(3):
+                    print("跳转到文章TAB")
+                    self.device(resourceId="cn.youth.news:id/a7h").click()
+                    time.sleep(2)
+                    temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout').all()
+                    if len(temp_articles) > 0:
+                        for article in temp_articles:
+                            article.click()
+                            time.sleep(3)
                             self.readArticles += 1
-                        elif self.device(resourceId="cn.youth.news:id/d5").exists:
-                            self.device(resourceId="cn.youth.news:id/d5").click()
-                            time.sleep(0.2)
-                        else:
-                            print("返回异常")
-                            self.start()
-                else:
-                    print("获取文章列表失败")
-
-                    self.start()
-                self.device.swipe_ext("up", 1)
-                self.device.swipe_ext("up", 0.6)
-                if self.readArticles > self.setting.articles:
-                    self.haveFinishDaily = self.have_finish_daily()
-            except UiObjectNotFoundError as e:
-                print("读取文章异常，重启app充实")
+                            if self.read_article() is False:
+                                self.start()
+                            if self.device(resourceId="cn.youth.news:id/rb").exists:
+                                self.device(resourceId="cn.youth.news:id/rb").click()
+                                time.sleep(0.2)
+                                self.readArticles += 1
+                            elif self.device(resourceId="cn.youth.news:id/d5").exists:
+                                self.device(resourceId="cn.youth.news:id/d5").click()
+                                time.sleep(0.2)
+                            else:
+                                print("返回异常")
+                                restart += 1
+                                self.start()
+                    else:
+                        restart += 1
+                        self.start()
+            except UiObjectNotFoundError:
+                print("观看文章出现错误，重启再来")
+                restart += 1
                 self.start()
-        print("===================" + str(self.__class__) + ":结束此轮阅读文章=============================================")
+        #
+        # if self.have_finish_daily() is True:
+        #     return True
+        # # 开始阅读文章
+        # # 启动app
+        # Common(self.device).start_app('cn.youth.news')
+        # while self.haveFinishDaily is not True:
+        #     # 阅读文章
+        #     try:
+        #         print("阅读文章")
+        #         # 网络加载失败时监听器
+        #         temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout').all()
+        #         if len(temp_articles) > 0:
+        #             for article in temp_articles:
+        #                 article.click()
+        #                 time.sleep(1)
+        #                 if self.read_article() is False:
+        #                     self.start()
+        #                 if self.device(resourceId="cn.youth.news:id/rb").exists:
+        #                     self.device(resourceId="cn.youth.news:id/rb").click()
+        #                     time.sleep(0.2)
+        #                     self.readArticles += 1
+        #                 elif self.device(resourceId="cn.youth.news:id/d5").exists:
+        #                     self.device(resourceId="cn.youth.news:id/d5").click()
+        #                     time.sleep(0.2)
+        #                 else:
+        #                     print("返回异常")
+        #                     self.start()
+        #         else:
+        #             print("获取文章列表失败")
+        #
+        #             self.start()
+        #         self.device.swipe_ext("up", 1)
+        #         self.device.swipe_ext("up", 0.6)
+        #         if self.readArticles > self.setting.articles:
+        #             self.haveFinishDaily = self.have_finish_daily()
+        #     except UiObjectNotFoundError as e:
+        #         print("读取文章异常，重启app充实")
+        #         self.start()
+        # print("===================" + str(self.__class__) + ":结束此轮阅读文章=============================================")
 
     # 获取任务
     def get_daily_details(self):

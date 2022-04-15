@@ -1,16 +1,19 @@
 from script.uiautomator2.zhongqing.OOP.daily_common import Common
+from script.uiautomator2.zhongqing.OOP.daily_readArticle import ReadArticles
 from script.uiautomator2.zhongqing.OOP.setttings import Settings
 
 
 class Read60MArticle:
     def __init__(self, device):
         self.device = device
-        self.common = Common()
+        self.common = Common(device)
         self.settings = Settings()
         self.watchMinutes = 0
 
     def start(self):
-        pass
+        while self.common.check_daily_unique('每日累计阅读10分钟可领取200青豆', '《 阅读10分钟 》') is not True:
+            ReadArticles(self.device).start()
+        print("done")
 
     def have_finish_daily(self):
         text = self.common.check_daily('每日累计阅读60分钟可领取400青豆奖励', 2, '阅读60分钟')
