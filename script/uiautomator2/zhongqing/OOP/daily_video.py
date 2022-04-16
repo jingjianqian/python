@@ -9,34 +9,32 @@ from script.uiautomator2.zhongqing.OOP.setttings import Settings
 
 
 class Videos:
-    def __init__(self, device_name, device) -> None:
+    def __init__(self, device) -> None:
         self.settings = Settings()
-        self.deviceName = device_name
         self.device = device
         self.readVideos = 0
         self.haveFinishDaily = False
 
     def start(self):
-        """1 判断是否完成任务"""
-        if self.have_finish_daily() is True:
-            return True
 
-        """2 重启app"""
-        Common(self.device).start_app('cn.youth.news')
+        """1 启动app"""
+        Common(self.device).start_app()
 
-        """3 循环完成任务"""
-        while self.haveFinishDaily is not True:
+        """2 阅读视频"""
+        restart = 0
+        while self.readVideos < 5:
+            if restart > self.settings.restartTimes:
+                break
             try:
-                print("观看视频11111")
+                print("观看视频")
                 # 视频菜单
                 self.device(resourceId="cn.youth.news:id/a7l").click()
                 time.sleep(3)
                 temp_videos = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.FrameLayout').all()
-                if len(temp_videos) > 0 and self.readVideos < self.settings.videos:
+                if len(temp_videos) > 0:
                     for video in temp_videos:
                         video.click()
                         time.sleep(30)
-                        # self.device.watcher.when(resourceId="cn.youth.news:id/start").click(resourceId="cn.youth.news:id/d5")
                         self.readVideos += 1
                         if self.device(resourceId="	cn.youth.news:id/ama").exists:
                             self.device(resourceId="cn.youth.news:id/ama").click()
@@ -51,7 +49,7 @@ class Videos:
                     print("视频列表错误")
                     self.start()
             except UiObjectNotFoundError as e:
-                print(e)
+                restart += 1
                 self.start()
 
         """4 结束"""

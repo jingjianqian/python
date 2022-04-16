@@ -2,6 +2,8 @@ import uiautomator2 as u2
 
 from connect import PhoneStatus
 from daily_sign import Sign
+from script.uiautomator2.zhongqing.OOP.daily_10m_article import Read10mArticle
+from script.uiautomator2.zhongqing.OOP.daily_5m_video import Read5mVideo
 from script.uiautomator2.zhongqing.OOP.daily_60m_article import Read60MArticle
 from script.uiautomator2.zhongqing.OOP.daily_hot_share import HotShare
 from script.uiautomator2.zhongqing.OOP.daily_readArticle import ReadArticles
@@ -24,12 +26,18 @@ class Daily:
 
     # TODO begin daily things
     def start_daily(self):
-        print("阅读5分钟")
-        read_60m_article = Read60MArticle(self.device)
-        read_60m_article.start()
-        # print("签到！")
-        # sign = Sign(self.deviceName, self.device)
-        # sign.start_sign()
+        print("签到！")
+        sign = Sign(self.deviceName, self.device)
+        sign.start_sign()
+        print("阅读10分钟")
+        read_10_article = Read10mArticle(self.device)
+        read_10_article.start()
+        print("观看5分钟")
+        read_tm_video = Read5mVideo(self.device)
+        read_tm_video.start()
+        print("火爆转发")
+        hot_share = HotShare(self.device)
+        hot_share.start()
         # print("阅读文章")
         # read_articles = ReadArticles(self.deviceName, self.device)
         # read_articles.start()

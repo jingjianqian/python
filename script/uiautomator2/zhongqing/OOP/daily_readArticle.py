@@ -28,7 +28,9 @@ class ReadArticles:
         2 跳转到观看文章菜单开始观看文章
         """
         restart = 0
-        while restart < self.setting.restartTimes | self.readArticles > 10:
+        while self.readArticles < 10:
+            if restart > self.setting.restartTimes:
+                break
             try:
                 for i in range(3):
                     print("跳转到文章TAB")
