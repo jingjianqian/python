@@ -19,9 +19,10 @@ class Search:
             return True
         try:
             print("12313123")
-            self.common.start_app('cn.youth.news')
-            self.device(resourceId="cn.youth.news:id/xl").click()
-            time.sleep(1)
+            self.common.start_app()
+            self.device(resourceId="cn.youth.news:id/a7k").click()
+            time.sleep(3)
+            self.device.swipe_ext("up", 1)
             self.device(resourceId="cn.youth.news:id/hl", text='完成全部搜索任务额外获得150青豆').right(resourceId="cn.youth.news:id/eb").click()
             time.sleep(2)
             for i in range(3):
@@ -29,12 +30,34 @@ class Search:
                 temp_xpath = '//android.widget.ListView/android.view.View['+str(i+1)+']/android.view.View[2]'
                 self.device.xpath(temp_xpath).click()
                 time.sleep(1)
-                search_titles = self.device(resourceId='wordListWrapper').child(className='android.view.View')
-                print(len(search_titles))
-                print(search_titles[0].get_text())
-
-            # self.device(resourceId="cn.youth.news:id/nz").click()
-            # if
+                for j in range(8):
+                    self.device.xpath('//*[@resource-id="wordListWrapper"]/android.view.View['+str(j+1)+']').click()
+                    time.sleep(2)
+                    if self.device(description="文库").exists:
+                        self.device(description="文库").click()
+                        time.sleep(5)
+                        self.device(resourceId="cn.youth.news:id/nz").click()
+                    elif self .device(description="视频").exists:
+                        self.device(description="视频").click()
+                        time.sleep(5)
+                        self.device(resourceId="cn.youth.news:id/nz").click()
+                    elif self.device(description="图片").exists:
+                        self.device(description="图片").click()
+                        time.sleep(5)
+                        self.device(resourceId="cn.youth.news:id/nz").click()
+                    elif self.device(description="贴吧").exists:
+                        self.device(description="贴吧").click()
+                        time.sleep(5)
+                        self.device(resourceId="cn.youth.news:id/nz").click()
+                    else:
+                        self.device(className="android.view.View").click()
+                        time.sleep(5)
+                        self.device.swipe_ext("up", 0.6)
+                        self.device(resourceId="cn.youth.news:id/nz").click()
+                        time.sleep(1)
+                        self.device(className="android.view.View").click()
+                        time.sleep(5)
+                        self.device.swipe_ext("up", 0.6)
         except UiObjectNotFoundError as e:
             print(e)
             self.start()

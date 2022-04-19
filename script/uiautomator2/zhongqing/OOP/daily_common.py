@@ -24,6 +24,8 @@ class Common:
             self.device.app_stop(self.setting.appPackageName)
             self.device.app_start(self.setting.appPackageName)
             time.sleep(6)
+            if self.device(resourceId="cn.youth.news:id/aio").exists:
+                self.device(resourceId="cn.youth.news:id/aio").click()
         except UiObjectNotFoundError as e:
             print(e)
 
@@ -65,7 +67,12 @@ class Common:
                 """2 跳转到任务获取菜单"""
                 print("跳转到任务列表TAB")
                 self.device(resourceId="cn.youth.news:id/a7k").click()
-                time.sleep(5)
+                time.sleep(6)
+                if self.device(text="领奖励").exists:
+                    self.device(text="领奖励").click()
+                    time.sleep(2)
+                if self.device(resourceId="cn.youth.news:id/sn").exists:
+                    self.device(resourceId="cn.youth.news:id/sn").click()
                 if self.device(resourceId="cn.youth.news:id/hl", text=unique_text).exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text=unique_text).sibling(
                         resourceId="cn.youth.news:id/title").get_text()
@@ -77,20 +84,20 @@ class Common:
                         return None
                     elif text is not None and int(str(text[0]).split('/')[0]) < int(str(text[0]).split('/')[1]):
                         print(daily_name + "任务未完成")
-                        print("==========================>结束获取" + daily_name + "任务," + unique_text + "==========================>")
+                        print("=================>结束获取" + daily_name + "任务," + unique_text + "===================>")
                         return False
                     elif text is not None and int(str(text[0]).split('/')[0]) == int(str(text[0]).split('/')[1]):
                         print(daily_name + " 任务已经完成")
-                        print("==========================>结束获取" + daily_name + "任务," + unique_text + "==========================")
+                        print( "===============>结束获取" + daily_name + "任务," + unique_text + "=====================")
                         return True
                     else:
                         print("获取" + daily_name + "任务数据异常")
-                        print("==========================>结束获取" + daily_name + "任务," + unique_text + "==========================")
+                        print("========= =====>结束获取" + daily_name + "任务," + unique_text + "=========================")
                         return None
                 else:
-                    print("获取" + daily_name + "任务数据异常")
+                    print(daily_name + " 任务已经完成")
                     print("==========================>结束获取" + daily_name + "任务," + unique_text + "==========================>")
-                    return None
+                    return True
             except UiObjectNotFoundError as e:
                 print("获取任务过程中寻找元素异常，准备重试")
                 restart += 1
@@ -98,6 +105,32 @@ class Common:
                 print("获取任务过程中寻找元素异常，准备重试")
                 restart += 1
         print("=====》结束获取" + daily_name + "任务," + unique_text)
+
+    def check_daily_unique2(self, unique_text: str, daily_name: str):
+        if self.device(resourceId="cn.youth.news:id/hl", text=unique_text).exists:
+            text = self.device(resourceId="cn.youth.news:id/hl", text=unique_text).sibling(
+                resourceId="cn.youth.news:id/title").get_text()
+            restart = self.setting.restartTimes
+            p1 = re.compile(r'[(](.*?)[)]', re.S)
+            text = re.findall(p1, text)
+            if text is None:
+                print("获取" + daily_name + "任务数据异常")
+                return None
+            elif text is not None and int(str(text[0]).split('/')[0]) < int(str(text[0]).split('/')[1]):
+                print(daily_name + "任务未完成")
+                print(
+                    "==========================>结束获取" + daily_name + "任务," + unique_text + "==========================>")
+                return False
+            elif text is not None and int(str(text[0]).split('/')[0]) == int(str(text[0]).split('/')[1]):
+                print(daily_name + " 任务已经完成")
+                print(
+                    "==========================>结束获取" + daily_name + "任务," + unique_text + "==========================")
+                return True
+            else:
+                print("获取" + daily_name + "任务数据异常")
+                print(
+                    "==========================>结束获取" + daily_name + "任务," + unique_text + "==========================")
+                return None
 
     # zhongqing
     def check_daily(self, unique_text, times, daily_name):

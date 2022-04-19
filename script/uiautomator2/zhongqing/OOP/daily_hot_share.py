@@ -16,8 +16,7 @@ class HotShare:
 
     def start(self):
         """检查任务完成情况"""
-        self.common.start_app('cn.youth.news')
-
+        self.common.start_app()
         """判断是否完成任务"""
         if self.hava_finished() is True:
             return True

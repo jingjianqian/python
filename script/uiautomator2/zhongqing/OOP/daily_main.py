@@ -51,8 +51,8 @@ class Daily:
         # welfare_watch = WelfareWatch(self.device)
         # welfare_watch.start()
         # print("搜索")
-        # search = Search(self.device)
-        # search.start()
+        search = Search(self.device)
+        search.start()
 
 
 if __name__ == '__main__':
