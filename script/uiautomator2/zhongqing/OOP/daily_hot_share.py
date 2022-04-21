@@ -18,7 +18,7 @@ class HotShare:
         """检查任务完成情况"""
         self.common.start_app()
         """判断是否完成任务"""
-        if self.hava_finished() is True:
+        if self.common.check_daily_unique('分享资讯到朋友圈或微信3次，被好友阅读后可共得1800青豆', '火爆转发') is True:
             return True
         try:
             # 1 跳转到分享界面
@@ -41,26 +41,12 @@ class HotShare:
                 self.device(resourceId="com.tencent.mm:id/gv3").click()
                 time.sleep(0.5)
                 self.device(resourceId="com.tencent.mm:id/gup").click()
-                # self.device(resourceId="com.tencent.mm:id/fz").click()
-
-            # 2 点击分享后返回到app
-            # # 2.1 分享按钮
-            # self.device().click()
-            # time.sleep(0.5)
-            # # 2.2 设置分享标题
-            # share_title = "shared by python script"
-            # # 2.3 设置可见
-            # self.device().click()
-            # time.sleep(0.5)
-            # # 2.4 确认分享
-            # self.device().click
-            # time.sleep(1)
         except UiObjectNotFoundError as e:
-            print()
+            print(e)
             self.start()
 
     def hava_finished(self):
-        text = self.common.check_daily('分享资讯到朋友圈或微信3次，被好友阅读后可共得1800青豆', 2, '火爆转发')
+        text = self.common.check_daily_unique('分享资讯到朋友圈或微信3次，被好友阅读后可共得1800青豆', '火爆转发')
         if text is None:
             print("获取任务数据异常")
             return None

@@ -70,6 +70,12 @@ class Common:
                 time.sleep(6)
                 if self.device(text="领奖励").exists:
                     self.device(text="领奖励").click()
+                    if daily_name == "搜索领京豆":
+                        time.sleep(6)
+                        self.device.xpath('//*[@resource-id="app"]/android.view.View[1]/android.view.View[2]').click()
+                        self.device(text="领奖励").click()
+                        time.sleep(0.5)
+                        self.device(resourceId="cn.youth.news:id/rb").click()
                     time.sleep(2)
                 if self.device(resourceId="cn.youth.news:id/sn").exists:
                     self.device(resourceId="cn.youth.news:id/sn").click()

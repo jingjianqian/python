@@ -15,14 +15,12 @@ class Search:
         self.searchTimes = 0
 
     def start(self):
-        if self.have_finish_daily() is True:
+        if self.common.check_daily_unique('完成全部搜索任务额外获得150青豆', '搜索领京豆') is True:
             return True
         try:
-            print("12313123")
             self.common.start_app()
             self.device(resourceId="cn.youth.news:id/a7k").click()
             time.sleep(3)
-            self.device.swipe_ext("up", 1)
             self.device(resourceId="cn.youth.news:id/hl", text='完成全部搜索任务额外获得150青豆').right(resourceId="cn.youth.news:id/eb").click()
             time.sleep(2)
             for i in range(3):
