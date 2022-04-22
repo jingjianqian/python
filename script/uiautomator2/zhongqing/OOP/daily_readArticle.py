@@ -10,11 +10,12 @@ from script.uiautomator2.zhongqing.OOP.setttings import Settings
 
 
 class ReadArticles:
-    def __init__(self, device) -> None:
+    def __init__(self, device, article_round) -> None:
         self.setting = Settings()
         self.device = device
         self.readArticles = 0
         self.haveFinishDaily = False
+        self.round = article_round
         self.common = Common(self.device)
 
     def start(self):
@@ -28,7 +29,7 @@ class ReadArticles:
         2 跳转到观看文章菜单开始观看文章
         """
         restart = 0
-        while self.readArticles < 10:
+        while self.readArticles < self.round:
             if restart > self.setting.restartTimes:
                 break
             try:

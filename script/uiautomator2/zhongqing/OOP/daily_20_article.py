@@ -12,5 +12,5 @@ class Read20Article:
 
     def start(self):
         while self.common.check_daily_unique("每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆", "阅读20篇文章") is not True:
-            read_article = ReadArticles(self.device)
+            read_article = ReadArticles(self.device, 10)
             read_article.start()

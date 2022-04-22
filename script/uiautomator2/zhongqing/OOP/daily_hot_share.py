@@ -2,6 +2,7 @@
 import time
 
 from uiautomator2 import UiObjectNotFoundError
+from uiautomator2.exceptions import XPathElementNotFoundError
 
 from script.uiautomator2.zhongqing.OOP.daily_common import Common
 from script.uiautomator2.zhongqing.OOP.setttings import Settings
@@ -42,6 +43,9 @@ class HotShare:
                 time.sleep(0.5)
                 self.device(resourceId="com.tencent.mm:id/gup").click()
         except UiObjectNotFoundError as e:
+            print(e)
+            self.start()
+        except XPathElementNotFoundError as e:
             print(e)
             self.start()
 

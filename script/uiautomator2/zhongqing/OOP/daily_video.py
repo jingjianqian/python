@@ -14,6 +14,7 @@ class Videos:
         self.device = device
         self.readVideos = 0
         self.haveFinishDaily = False
+        self.common = Common(self.device)
 
     def start(self):
 
@@ -22,7 +23,7 @@ class Videos:
 
         """2 阅读视频"""
         restart = 0
-        while self.readVideos < 5:
+        while self.common.check_daily_unique("每看30秒可获得大量观看青豆，累计10次额外加奖100青豆", "看五个视频") is not True:
             if restart > self.settings.restartTimes:
                 break
             try:

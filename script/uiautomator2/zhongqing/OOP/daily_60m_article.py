@@ -12,7 +12,7 @@ class Read60MArticle:
 
     def start(self):
         while self.common.check_daily_unique('每日累计阅读10分钟可领取200青豆', '《 阅读10分钟 》') is not True:
-            ReadArticles(self.device).start()
+            ReadArticles(self.device, 10).start()
         print("done")
 
     def have_finish_daily(self):
