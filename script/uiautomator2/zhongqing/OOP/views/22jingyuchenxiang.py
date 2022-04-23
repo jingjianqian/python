@@ -1,9 +1,9 @@
 """
-18、轻松靓图
+22、静域沉香
 """
 
 
-class QingSongLiangTu:
+class JingYuChenXiang:
     def __init__(self):
         pass
 
