@@ -12,5 +12,5 @@ class Read5mVideo:
 
     def start(self):
         while self.common.check_daily_unique("每日累计观看5分钟可领取100青豆", '观看5分钟') is not True:
-            read_5m_videos = Videos(self.device, 10)
+            read_5m_videos = Videos(self.device)
             read_5m_videos.start()

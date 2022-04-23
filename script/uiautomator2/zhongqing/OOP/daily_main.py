@@ -41,7 +41,7 @@ class Daily:
         read_20_article.start()
 
         print("观看视频")
-        read_videos = Videos(self.device)
+        read_videos = Videos(self.device, 10)
         read_videos.start()
 
         print("火爆转发")
@@ -64,12 +64,8 @@ class Daily:
         read_tm_video = Read5mVideo(self.device)
         read_tm_video.start()
 
-        print("火爆转发")
-        hot_share = HotShare(self.device)
-        hot_share.start()
-
         print("阅读文章")
-        read_articles = ReadArticles(self.deviceName)
+        read_articles = ReadArticles(self.deviceName, 10)
         read_articles.start()
 
 

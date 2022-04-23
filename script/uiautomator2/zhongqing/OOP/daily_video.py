@@ -9,10 +9,11 @@ from script.uiautomator2.zhongqing.OOP.setttings import Settings
 
 
 class Videos:
-    def __init__(self, device) -> None:
+    def __init__(self, device, videos_rounds) -> None:
         self.settings = Settings()
         self.device = device
         self.readVideos = 0
+        self.videosRounds = videos_rounds
         self.haveFinishDaily = False
         self.common = Common(self.device)
 
@@ -23,7 +24,7 @@ class Videos:
 
         """2 阅读视频"""
         restart = 0
-        while self.common.check_daily_unique("每看30秒可获得大量观看青豆，累计10次额外加奖100青豆", "看五个视频") is not True:
+        while self.readVideos < self.videosRounds:
             if restart > self.settings.restartTimes:
                 break
             try:
