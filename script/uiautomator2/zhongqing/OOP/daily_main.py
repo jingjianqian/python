@@ -7,6 +7,7 @@ from script.uiautomator2.zhongqing.OOP.daily_20_article import Read20Article
 from script.uiautomator2.zhongqing.OOP.daily_5m_video import Read5mVideo
 from script.uiautomator2.zhongqing.OOP.daily_60m_article import Read60MArticle
 from script.uiautomator2.zhongqing.OOP.daily_continued_read_article import ContinueReadArticle
+from script.uiautomator2.zhongqing.OOP.daily_continued_watch_videos import ContinueWatchVideos
 from script.uiautomator2.zhongqing.OOP.daily_hot_share import HotShare
 from script.uiautomator2.zhongqing.OOP.daily_readArticle import ReadArticles
 from script.uiautomator2.zhongqing.OOP.daily_search import Search
@@ -29,7 +30,7 @@ class Daily:
     # TODO begin daily things
     def start_daily(self):
         print("持续阅读文")
-        continue_read_article = ContinueReadArticle(self.device)
+        continue_read_article = ContinueWatchVideos(self.device)
         continue_read_article.start()
 
         print("签到！")
@@ -52,9 +53,9 @@ class Daily:
         welfare_watch = WelfareWatch(self.device)
         welfare_watch.start()
 
-        print("搜索")
-        search = Search(self.device)
-        search.start()
+        # print("搜索")
+        # search = Search(self.device)
+        # search.start()
 
         print("阅读10分钟")
         read_10_article = Read10mArticle(self.device)
