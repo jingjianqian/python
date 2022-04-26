@@ -18,7 +18,7 @@ class WelfareWatch:
         if self.common.check_daily_unique('今日观看6次激励视频额外奖励150青豆','看福利视频') is True:
             return
         try:
-            self.device(resourceId="cn.youth.news:id/a7k").click()
+            self.device(resourceId=self.settings.dailyTag).click()
             time.sleep(2)
             for i in range(6):
                 self.device(resourceId="cn.youth.news:id/hl", text='今日观看6次激励视频额外奖励150青豆').right(resourceId="cn.youth.news:id/eb").click()
@@ -26,7 +26,7 @@ class WelfareWatch:
                 left_time = self.device(className="android.widget.TextView").get_text()
                 time.sleep(int(left_time)+1)
                 self.device.xpath('//*[@resource-id="android:id/content"]/android.widget.RelativeLayout[1]/android.widget.ImageView[1]').click()
-                self.device(resourceId="cn.youth.news:id/a7k").click()
+                self.device(resourceId=self.settings.dailyTag).click()
             self.start()
         except UiObjectNotFoundError as e:
             print(e)

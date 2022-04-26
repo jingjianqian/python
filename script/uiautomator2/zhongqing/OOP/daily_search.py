@@ -19,7 +19,7 @@ class Search:
             return True
         try:
             self.common.start_app()
-            self.device(resourceId="cn.youth.news:id/a7k").click()
+            self.device(resourceId=self.settings.dailyTag).click()
             time.sleep(3)
             self.device(resourceId="cn.youth.news:id/hl", text='完成全部搜索任务额外获得150青豆').right(resourceId="cn.youth.news:id/eb").click()
             time.sleep(2)

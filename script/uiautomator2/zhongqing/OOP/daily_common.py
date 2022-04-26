@@ -66,7 +66,7 @@ class Common:
                 self.start_app()
                 """2 跳转到任务获取菜单"""
                 print("跳转到任务列表TAB")
-                self.device(resourceId="cn.youth.news:id/a7k").click()
+                self.device(resourceId=self.setting.dailyTag).click()
                 time.sleep(6)
                 if self.device(text="领奖励").exists:
                     self.device(text="领奖励").click()
@@ -77,10 +77,14 @@ class Common:
                         time.sleep(0.5)
                         self.device(resourceId="cn.youth.news:id/rb").click()
                     time.sleep(2)
+                else:
+                    print("没有需要领取的奖励")
                 if self.device(resourceId="cn.youth.news:id/sn").exists:
                     self.device(resourceId="cn.youth.news:id/sn").click()
-                if self.device(resourceId="cn.youth.news:id/hl", text=unique_text).exists:
-                    text = self.device(resourceId="cn.youth.news:id/hl", text=unique_text).sibling(
+                else:
+                    pass
+                if self.device(resourceId=self.setting.readArticleUniqueXpath, text=unique_text).exists:
+                    text = self.device(resourceId=self.setting.readArticleUniqueXpath, text=unique_text).sibling(
                         resourceId="cn.youth.news:id/title").get_text()
                     restart = self.setting.restartTimes
                     p1 = re.compile(r'[(](.*?)[)]', re.S)
@@ -113,8 +117,8 @@ class Common:
         print("=====》结束获取" + daily_name + "任务," + unique_text)
 
     def check_daily_unique2(self, unique_text: str, daily_name: str):
-        if self.device(resourceId="cn.youth.news:id/hl", text=unique_text).exists:
-            text = self.device(resourceId="cn.youth.news:id/hl", text=unique_text).sibling(
+        if self.device(resourceId=self.setting.readArticleUniqueXpath, text=unique_text).exists:
+            text = self.device(resourceId=self.setting.readArticleUniqueXpath, text=unique_text).sibling(
                 resourceId="cn.youth.news:id/title").get_text()
             restart = self.setting.restartTimes
             p1 = re.compile(r'[(](.*?)[)]', re.S)
@@ -149,7 +153,7 @@ class Common:
                 self.device.app_stop('cn.youth.news')
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
-                self.device(resourceId="cn.youth.news:id/a7k").click()
+                self.device(resourceId=self.setting.dailyTag).click()
                 time.sleep(3)
                 if self.device(resourceId="cn.youth.news:id/hl", text=unique_text).exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text=unique_text).sibling(

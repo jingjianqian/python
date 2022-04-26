@@ -14,3 +14,10 @@ class Settings:
         self.base_daily_list = {"sign": "每日签到", 'read5min': '阅读5分钟', 'read10min': '阅读十分钟', 'read60min': '阅读60分钟',
                                 'watch10video': '观看10次视频'}
         self.other_daily_list = {"search3time": '搜索领青豆'}
+
+        self.dailyTag = 'cn.youth.news:id/x_'
+        self.signXpath = '//*[@resource-id="cn.youth.news:id/a4z"]/android.widget.RelativeLayout[1]/android.widget.FrameLayout[1]'
+        self.signSuccessLogId = 'cn.youth.news:id/awf'
+
+        self.readArticleUniqueXpath = "cn.youth.news:id/hj"
+        self.readArticleTab = "cn.youth.news:id/x8"

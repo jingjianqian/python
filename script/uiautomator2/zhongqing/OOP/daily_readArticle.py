@@ -36,7 +36,7 @@ class ReadArticles:
             try:
                 for i in range(3):
                     print("跳转到文章TAB")
-                    self.device(resourceId="cn.youth.news:id/a7h").click()
+                    self.device(resourceId=self.setting.readArticleTab).click()
                     time.sleep(2)
                     temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout').all()
                     if len(temp_articles) > 0:
@@ -116,10 +116,10 @@ class ReadArticles:
                 self.device.app_stop('cn.youth.news')
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
-                self.device(resourceId="cn.youth.news:id/a7k").click()
+                self.device(resourceId=self.setting.dailyTag).click()
                 time.sleep(5)
-                if self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").exists:
-                    text = self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").get_text()
+                if self.device(resourceId=self.setting.readArticleUniqueXpath, text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").exists:
+                    text = self.device(resourceId=self.setting.readArticleUniqueXpath, text="每看30秒可获得大量阅读青豆，累计20篇额外加奖200青豆").sibling(resourceId="cn.youth.news:id/title").get_text()
                     restart = self.setting.restartTimes
                     p1 = re.compile(r'[(](.*?)[)]', re.S)
                     text = re.findall(p1, text)

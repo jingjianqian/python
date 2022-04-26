@@ -29,45 +29,45 @@ class Daily:
 
     # TODO begin daily things
     def start_daily(self):
-        print("持续阅读文")
-        continue_read_article = ContinueWatchVideos(self.device)
-        continue_read_article.start()
+        # print("持续阅读文")
+        # continue_read_article = ContinueWatchVideos(self.device)
+        # continue_read_article.start()
 
-        print("签到！")
-        sign = Sign(self.deviceName, self.device)
-        sign.start_sign()
+        # print("签到！")
+        # sign = Sign(self.deviceName, self.device)
+        # sign.start_sign()
 
         print("阅读20篇文章")
         read_20_article = Read20Article(self.device)
         read_20_article.start()
 
-        print("观看视频")
-        read_videos = Videos(self.device, 10)
-        read_videos.start()
-
-        print("火爆转发")
-        hot_share = HotShare(self.device)
-        hot_share.start()
-
-        print("观看福利视频")
-        welfare_watch = WelfareWatch(self.device)
-        welfare_watch.start()
-
-        # print("搜索")
-        # search = Search(self.device)
-        # search.start()
-
-        print("阅读10分钟")
-        read_10_article = Read10mArticle(self.device)
-        read_10_article.start()
-
-        print("观看5分钟")
-        read_tm_video = Read5mVideo(self.device)
-        read_tm_video.start()
-
-        print("阅读文章")
-        read_articles = ReadArticles(self.deviceName, 10)
-        read_articles.start()
+        # print("观看视频")
+        # read_videos = Videos(self.device, 10)
+        # read_videos.start()
+        #
+        # print("火爆转发")
+        # hot_share = HotShare(self.device)
+        # hot_share.start()
+        #
+        # print("观看福利视频")
+        # welfare_watch = WelfareWatch(self.device)
+        # welfare_watch.start()
+        #
+        # # print("搜索")
+        # # search = Search(self.device)
+        # # search.start()
+        #
+        # print("阅读10分钟")
+        # read_10_article = Read10mArticle(self.device)
+        # read_10_article.start()
+        #
+        # print("观看5分钟")
+        # read_tm_video = Read5mVideo(self.device)
+        # read_tm_video.start()
+        #
+        # print("阅读文章")
+        # read_articles = ReadArticles(self.deviceName, 10)  # 140.82.114.4  199.232.69.194
+        # read_articles.start()
 
 
 if __name__ == '__main__':

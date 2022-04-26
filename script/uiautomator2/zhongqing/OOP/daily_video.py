@@ -83,7 +83,7 @@ class Videos:
                 self.device.app_stop('cn.youth.news')
                 self.device.app_start('cn.youth.news')
                 time.sleep(3)
-                self.device(resourceId="cn.youth.news:id/a7k").click()
+                self.device(resourceId=self.settings.dailyTag).click()
                 time.sleep(3)
                 if self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量观看青豆，累计10个额外加奖100青豆").exists:
                     text = self.device(resourceId="cn.youth.news:id/hl", text="每看30秒可获得大量观看青豆，累计10个额外加奖100青豆").sibling(

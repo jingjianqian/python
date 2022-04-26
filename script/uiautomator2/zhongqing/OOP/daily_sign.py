@@ -1,7 +1,7 @@
 """每日签到类"""
 import time
 
-from uiautomator2.exceptions import XPathElementNotFoundError
+from uiautomator2.exceptions import XPathElementNotFoundError, UiObjectNotFoundError
 
 from connect import PhoneStatus
 
@@ -30,8 +30,8 @@ class Sign:
                         self.restartTimes = 0
                         return True
                     elif self.device(resourceId="cn.youth.news:id/title", text="今日签到").exists:
-                        self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.RelativeLayout[1]/android.widget.FrameLayout[1]').click()
-                        self.device(resourceId="cn.youth.news:id/awo").click()
+                        self.device.xpath(self.settings.signXpath).click()
+                        self.device(resourceId=self.settings.signSuccessLogId).click()
                         self.signStatus = True
                         self.restartTimes = 0
                         return True
@@ -54,8 +54,9 @@ class Sign:
         try:
             self.device.app_stop("cn.youth.news")
             self.device.app_start("cn.youth.news")
-            self.device(resourceId="cn.youth.news:id/a7k").click()
-            time.sleep(2)
+            time.sleep(10)
+            self.device(resourceId=self.settings.dailyTag).click()
+            time.sleep(3)
             if 1:
                 return True
             else:
