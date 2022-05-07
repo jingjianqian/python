@@ -1,4 +1,4 @@
-from script.uiautomator2.zhongqing.OOP.daily_video import Videos
+from daily_video import Videos
 
 
 class ContinueWatchVideos:

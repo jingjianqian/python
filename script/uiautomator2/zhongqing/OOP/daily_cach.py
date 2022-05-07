@@ -1,5 +1,5 @@
-from script.uiautomator2.zhongqing.OOP.daily_common import Common
-from script.uiautomator2.zhongqing.OOP.setttings import Settings
+from daily_common import Common
+from setttings import Settings
 
 
 class Cash():

@@ -4,7 +4,7 @@ import time
 
 from uiautomator2.exceptions import XPathElementNotFoundError, UiObjectNotFoundError
 import uiautomator2.exceptions as u2exceptions
-from script.uiautomator2.zhongqing.OOP.setttings import Settings
+from setttings import Settings
 
 """
 公共类

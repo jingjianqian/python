@@ -2,17 +2,17 @@ import uiautomator2 as u2
 
 from connect import PhoneStatus
 from daily_sign import Sign
-from script.uiautomator2.zhongqing.OOP.daily_10m_article import Read10mArticle
-from script.uiautomator2.zhongqing.OOP.daily_20_article import Read20Article
-from script.uiautomator2.zhongqing.OOP.daily_5m_video import Read5mVideo
-from script.uiautomator2.zhongqing.OOP.daily_60m_article import Read60MArticle
-from script.uiautomator2.zhongqing.OOP.daily_continued_read_article import ContinueReadArticle
-from script.uiautomator2.zhongqing.OOP.daily_continued_watch_videos import ContinueWatchVideos
-from script.uiautomator2.zhongqing.OOP.daily_hot_share import HotShare
-from script.uiautomator2.zhongqing.OOP.daily_readArticle import ReadArticles
-from script.uiautomator2.zhongqing.OOP.daily_search import Search
-from script.uiautomator2.zhongqing.OOP.daily_video import Videos
-from script.uiautomator2.zhongqing.OOP.daily_welfare_watch import WelfareWatch
+from daily_10m_article import Read10mArticle
+from daily_20_article import Read20Article
+from daily_5m_video import Read5mVideo
+from daily_60m_article import Read60MArticle
+from daily_continued_read_article import ContinueReadArticle
+from daily_continued_watch_videos import ContinueWatchVideos
+from daily_hot_share import HotShare
+from daily_readArticle import ReadArticles
+from daily_search import Search
+from daily_video import Videos
+from daily_welfare_watch import WelfareWatch
 
 """
 app每日任务主线

@@ -3,8 +3,8 @@ import time
 from uiautomator2 import UiObjectNotFoundError
 from uiautomator2.exceptions import XPathElementNotFoundError
 
-from script.uiautomator2.zhongqing.OOP.daily_common import Common
-from script.uiautomator2.zhongqing.OOP.setttings import Settings
+from daily_common import Common
+from setttings import Settings
 
 
 class WelfareWatch:

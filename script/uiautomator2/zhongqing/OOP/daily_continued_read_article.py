@@ -1,4 +1,4 @@
-from script.uiautomator2.zhongqing.OOP.daily_readArticle import ReadArticles
+from daily_readArticle import ReadArticles
 
 
 class ContinueReadArticle:
