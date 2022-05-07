@@ -38,7 +38,7 @@ class ReadArticles:
                     print("跳转到文章TAB")
                     self.device(resourceId=self.setting.readArticleTab).click()
                     time.sleep(2)
-                    temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a5f"]/android.widget.LinearLayout').all()
+                    temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a4z"]/android.widget.LinearLayout').all()
                     if len(temp_articles) > 0:
                         for article in temp_articles:
                             article.click()
@@ -46,8 +46,8 @@ class ReadArticles:
                             self.readArticles += 1
                             if self.read_article() is False:
                                 self.start()
-                            if self.device(resourceId="cn.youth.news:id/rb").exists:
-                                self.device(resourceId="cn.youth.news:id/rb").click()
+                            if self.device(resourceId="cn.youth.news:id/r6").exists:
+                                self.device(resourceId="cn.youth.news:id/r6").click()
                                 time.sleep(0.2)
                                 self.readArticles += 1
                             elif self.device(resourceId="cn.youth.news:id/d5").exists:
@@ -58,6 +58,7 @@ class ReadArticles:
                                 restart += 1
                                 self.start()
                     else:
+                        print("获取文章列表异常")
                         restart += 1
                         self.start()
             except UiObjectNotFoundError:
@@ -161,7 +162,7 @@ class ReadArticles:
         read_more = False
         for i in range(20):
             # 非正常文章排版 无返回按钮 直接过滤
-            if str(self.device(resourceId="cn.youth.news:id/rb").exists) != "True" and str(self.device(resourceId="cn.youth.news:id/d5").exists) != "True":
+            if str(self.device(resourceId="cn.youth.news:id/r6").exists) != "True" and str(self.device(resourceId="cn.youth.news:id/d5").exists) != "True":
                 return False
             self.device.swipe_ext("up", 1)
             time.sleep(1.5)

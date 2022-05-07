@@ -29,13 +29,13 @@ class Daily:
 
     # TODO begin daily things
     def start_daily(self):
-        # print("持续阅读文")
-        # continue_read_article = ContinueWatchVideos(self.device)
-        # continue_read_article.start()
+        print("持续阅读文")
+        continue_read_article = ContinueReadArticle(self.device)
+        continue_read_article.start()
 
-        # print("签到！")
-        # sign = Sign(self.deviceName, self.device)
-        # sign.start_sign()
+        print("签到！")
+        sign = Sign(self.deviceName, self.device)
+        sign.start_sign()
 
         print("阅读20篇文章")
         read_20_article = Read20Article(self.device)
