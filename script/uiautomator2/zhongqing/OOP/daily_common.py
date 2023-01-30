@@ -23,7 +23,7 @@ class Common:
             time.sleep(0.5)
             self.device.app_stop(self.setting.appPackageName)
             self.device.app_start(self.setting.appPackageName)
-            time.sleep(8)
+            time.sleep(20)
             if self.device(resourceId="cn.youth.news:id/aio").exists:
                 self.device(resourceId="cn.youth.news:id/aio").click()
         except UiObjectNotFoundError as e:

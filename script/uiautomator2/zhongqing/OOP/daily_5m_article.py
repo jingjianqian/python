@@ -1,9 +1,9 @@
 """
 阅读十分钟
 """
-from  daily_common import Common
-from  daily_readArticle import ReadArticles
-from  setttings import Settings
+from daily_common import Common
+from daily_readArticle import ReadArticles
+from setttings import Settings
 
 
 class Read5mArticle:

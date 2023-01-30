@@ -20,4 +20,4 @@ class Settings:
         self.signSuccessLogId = 'cn.youth.news:id/awf'
 
         self.readArticleUniqueXpath = "cn.youth.news:id/hj"
-        self.readArticleTab = "cn.youth.news:id/wa"
+        self.readArticleTab = "cn.youth.news:id/tn"

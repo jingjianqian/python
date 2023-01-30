@@ -2,7 +2,6 @@
 import re
 import time
 
-import uiautomator2.exceptions as u2exceptions
 from uiautomator2.exceptions import XPathElementNotFoundError, UiObjectNotFoundError
 
 from daily_common import Common
@@ -38,7 +37,8 @@ class ReadArticles:
                     print("跳转到文章TAB")
                     self.device(resourceId=self.setting.readArticleTab).click()
                     time.sleep(2)
-                    temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a3s"]/android.widget.LinearLayout').all()
+                    temp_articles = self.device.xpath('//*[@resource-id="cn.youth.news:id/a2_"]/android.widget'
+                                                      '.LinearLayout[1]/android.view.ViewGroup[1]').all()
                     if len(temp_articles) > 0:
                         for article in temp_articles:
                             article.click()
@@ -162,7 +162,7 @@ class ReadArticles:
         read_more = False
         for i in range(20):
             # 非正常文章排版 无返回按钮 直接过滤
-            if str(self.device(resourceId="cn.youth.news:id/ql").exists) != "True" and str(self.device(resourceId="cn.youth.news:id/d5").exists) != "True":
+            if str(self.device(resourceId="cn.youth.news:id/pn").exists) != "True": # and str(self.device(resourceId="cn.youth.news:id/d5").exists) != "True"
                 return False
             self.device.swipe_ext("up", 1)
             time.sleep(1.5)
